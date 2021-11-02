@@ -1,0 +1,11 @@
+.wrapper {
+  width: 60%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.title {
+  color: red;
+}

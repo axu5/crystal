@@ -45,6 +45,10 @@
   font-size: 4rem;
 }
 
+.crystal {
+  color: blueviolet;
+}
+
 .title,
 .description {
   text-align: center;
@@ -54,15 +58,6 @@
   margin: 4rem 0;
   line-height: 1.5;
   font-size: 1.5rem;
-}
-
-.code {
-  background: #fafafa;
-  border-radius: 5px;
-  padding: 0.75rem;
-  font-size: 1.1rem;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
 .grid {
@@ -82,7 +77,12 @@
   border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+
+  min-width: 300px;
   max-width: 300px;
+  min-height: 150px;
+  max-height: 150px;
 }
 
 .card:hover,
@@ -90,6 +90,10 @@
 .card:active {
   color: #0070f3;
   border-color: #0070f3;
+  transform: scale(1.1);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+
+  cursor: pointer;
 }
 
 .card h2 {
