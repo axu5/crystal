@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { makeAuthReq } from "../utils/makeAuthReq";
 
 export default function Login() {
   const router = useRouter();
@@ -18,17 +19,17 @@ export default function Login() {
       password,
     };
 
-    const res = await fetch("http://localhost:3000/api/login", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(body),
-      credentials: "same-origin",
-    });
-    const data = await res.json();
-    console.log(`data`, data);
+    // const res = await fetch("http://localhost:3000/api/login", {
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    //   method: "POST",
+    //   body: JSON.stringify(body),
+    //   credentials: "same-origin",
+    // });
+    const data = await makeAuthReq("login", body);
+
     const { success, error } = data;
     if (!success) {
       setError(

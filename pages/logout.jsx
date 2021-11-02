@@ -1,61 +1,37 @@
-import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { makeAuthReq } from "../utils/makeAuthReq";
 
 export default function Login() {
   const router = useRouter();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  // const logoutAction = async e => {
+  //   e.preventDefault();
 
-  const logoutAction = async e => {
-    e.preventDefault();
+  //   await makeAuthReq("logout");
 
-    const body = {
-      username,
-      password,
-    };
+  //   router.push("/");
+  // };
 
-    const res = await fetch("http://localhost:3000/api/logout", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(body),
-      credentials: "same-origin",
-    });
-    const data = await res.json();
+  // const logoutAllAction = async e => {
+  //   e.preventDefault();
 
-    const { success, error } = data;
-    if (!success) {
-      setError(
-        typeof error === "object" ? JSON.stringify(error) : error
-      );
-    } else {
-      // redirect user
+  //   await makeAuthReq("logout-all");
+
+  //   router.push("/");
+  // };
+
+  const logout = type => {
+    return async e => {
+      e.preventDefault();
+      await makeAuthReq(`logout${type}`);
       router.push("/");
-    }
+    };
   };
 
   return (
     <div>
-      {error !== "" && (
-        <>
-          <div>{error}</div>
-          <div>
-            did you meant to sign up? (
-            <Link href='/signup' passHref>
-              <a>click here!</a>
-            </Link>
-            )
-          </div>
-        </>
-      )}
-      <form onSubmit={logoutAction}>
-        <button type='submit'>Log out!</button>
-      </form>
+      <button onClick={logout("")}>Log out!</button>
+      <button onClick={logout("-all")}>Log out all!</button>
     </div>
   );
 }

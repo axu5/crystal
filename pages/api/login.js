@@ -19,15 +19,15 @@ export default async function login(req, res) {
     });
 
     if (!user) {
-      throw "incorrect username";
-      // throw genericError;
+      // throw "incorrect username";
+      throw genericError;
     }
 
     const { password: userPassword, uuid } = user;
 
     if (!bcrypt.compare(password, userPassword)) {
-      throw "incorrect password";
-      // throw genericError;
+      // throw "incorrect password";
+      throw genericError;
     }
 
     await createAccessToken(res, uuid);

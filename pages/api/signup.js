@@ -2,22 +2,14 @@ import middleware from "./utils/middleware";
 import validator from "email-validator";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
-import jwt from "jsonwebtoken";
-import setCookie from "./utils/setCookie";
-import {
-  Tokens,
-  TokenExpiration,
-  defaultCookieOptions,
-} from "./constants";
 import getDb from "./database";
 import { createAccessToken, createRefreshToken } from "./tokenUtils";
 
 const saltRounds = 10;
-const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
 
 export default async function signup(req, res) {
   await middleware(req, res);
-  const { users, sessions } = await getDb();
+  const { users } = await getDb();
 
   try {
     const { username, password, email } = req.body;
@@ -57,12 +49,14 @@ export default async function signup(req, res) {
     const userObject = {
       username,
       email,
-      address: "", // change
+      firstName: "", // TODO: add
+      lastName: "", // TODO: add
+      address: "", // TODO: change
       password: await bcrypt.hash(password, saltRounds),
       wishlist: [],
       uuid: v4(),
       accountAge: new Date(),
-      id: users.toArray().length,
+      id: await users.count(),
       purchased: false,
       purchases: [],
       discountsMade: [],

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { makeAuthReq } from "../utils/makeAuthReq";
 
 export default function SignUp() {
   const router = useRouter();
@@ -26,19 +27,22 @@ export default function SignUp() {
       password,
     };
 
-    const res = await fetch("http://localhost:3000/api/signup", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      credentials: "same-origin",
-      body: JSON.stringify(body),
-    });
+    // const res = await fetch("http://localhost:3000/api/signup", {
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    //   method: "POST",
+    //   credentials: "same-origin",
+    //   body: JSON.stringify(body),
+    // });
 
-    const data = await res.json();
+    // const data = await res.json();
+
+    const data = await makeAuthReq("signup", body);
+
     const { success, error } = data;
-    console.log(`error`, error);
+
     if (success) {
       // redirect user
       router.push(redirect ? `/${redirect}` : "/");

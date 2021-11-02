@@ -29,19 +29,12 @@ export async function createAccessToken(res, uuid) {
     expiresIn: TokenExpiration.Access * 1000,
   });
 
-  try {
-    const at = verify(accessToken, ACCESS_TOKEN_SECRET);
-    console.log("at :>> ", at);
-  } catch (error) {
-    console.log("error :>> ", error);
-  }
-
-  res = setCookie(res, Tokens.Access, accessToken, {
+  setCookie(res, Tokens.Access, accessToken, {
     ...defaultCookieOptions,
-    maxAge: TokenExpiration.Access * 1000,
+    maxAge: TokenExpiration.Access,
   });
 
-  return res;
+  return accessToken;
 }
 
 /**
@@ -52,23 +45,35 @@ export async function createRefreshToken(res, uuid) {
   const { users, sessions } = await getDb();
   const user = await users.findOne({ uuid });
 
-  const refreshTokenPayload = {
-    tokenVersion: 0,
-    uuid: user.uuid,
-  };
-  await sessions.insertOne(refreshTokenPayload);
+  let session = await sessions.findOne({ uuid });
 
-  const refreshToken = sign(
-    refreshTokenPayload,
-    REFRESH_TOKEN_SECRET,
-    {
-      expiresIn: TokenExpiration.Refresh * 1000,
-    }
-  );
-  res = setCookie(res, Tokens.Refresh, refreshToken, {
-    ...defaultCookieOptions,
-    maxAge: TokenExpiration.Refresh * 1000,
+  console.log("session :>> ", session);
+  if (!session) {
+    session = {
+      tokenVersion: 0,
+      uuid: user.uuid,
+    };
+    await sessions.insertOne(session);
+  }
+
+  const refreshToken = sign(session, REFRESH_TOKEN_SECRET, {
+    expiresIn: TokenExpiration.Refresh * 1000,
   });
 
-  return res;
+  setCookie(res, Tokens.Refresh, refreshToken, {
+    ...defaultCookieOptions,
+    maxAge: TokenExpiration.Refresh,
+  });
+
+  return refreshToken;
+}
+
+export function clearTokens(res) {
+  const invalidatedOptions = {
+    ...defaultCookieOptions,
+    expires: new Date(0),
+    token: "deleted",
+  };
+  setCookie(res, Tokens.Access, "deleted", invalidatedOptions);
+  setCookie(res, Tokens.Refresh, "deleted", invalidatedOptions);
 }
