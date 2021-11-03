@@ -1,8 +1,8 @@
-import { verify } from "jsonwebtoken";
+import { decode, verify } from "jsonwebtoken";
 
 import middleware from "./middleware";
 import getDb from "../database";
-import { createAccessToken } from "../tokenUtils";
+import { clearTokens, createAccessToken } from "../tokenUtils";
 import setCookie from "./setCookie";
 import { Tokens } from "../constants";
 
@@ -23,17 +23,17 @@ export default async function auth(req, res, makeAccessToken = true) {
 
   if (validRt) {
     if (!validAt) {
-      return makeAccessToken
-        ? // @ts-ignore
-          await createAccessToken(res, validRt.uuid)
-        : setCookie(res, Tokens.Access, "");
+      const at =
+        // @ts-ignore
+        await createAccessToken(res, validRt.uuid);
+      console.log("at :>> ", at);
+      return decode(at);
     }
 
     // @ts-ignore
     return validAt;
   } else {
-    setCookie(res, Tokens.Access, "");
-    setCookie(res, Tokens.Refresh, "");
+    clearTokens(res);
     throw "not logged in";
   }
 }

@@ -9,3 +9,11 @@
 .title {
   color: red;
 }
+
+.hearted {
+  background: red;
+}
+
+.notHearted {
+  background: blue;
+}

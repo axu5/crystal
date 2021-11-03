@@ -23,5 +23,6 @@ export default async function getDb() {
     users: await client.collection("users"),
     sessions: await client.collection("sessions"),
     products: await client.collection("products"),
+    discounts: await client.collection("discounts"),
   };
 }

@@ -13,6 +13,7 @@ export default function NavBar() {
   useEffect(() => {
     (async () => {
       const _user = await getUser();
+      console.log(`_user`, _user);
       setUser(_user);
     })();
   }, [router]);
@@ -30,7 +31,14 @@ export default function NavBar() {
           <Link href='/catalogue'>
             <a className={styles.pageLink}>catalogue</a>
           </Link>
-          {!user ? (
+          {user ? (
+            <>
+              <Link href='/logout'>
+                <a className={styles.pageLink}>logout</a>
+              </Link>
+              <h1>welcome {user.username}</h1>
+            </>
+          ) : (
             <>
               {" "}
               <Link href='/login'>
@@ -39,13 +47,6 @@ export default function NavBar() {
               <Link href='/signup'>
                 <a className={styles.pageLink}>signup</a>
               </Link>
-            </>
-          ) : (
-            <>
-              <Link href='/logout'>
-                <a className={styles.pageLink}>logout</a>
-              </Link>
-              <h1>welcome {user.username}</h1>
             </>
           )}
         </div>
