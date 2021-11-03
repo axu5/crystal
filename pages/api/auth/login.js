@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 
-import getDb from "./database";
-import { createAccessToken, createRefreshToken } from "./tokenUtils";
-import middleware from "./utils/middleware";
+import getDb from "../database";
+import { createAccessToken, createRefreshToken } from "../tokenUtils";
+import middleware from "../utils/middleware";
 
 const genericError = "incorrect username or password";
 

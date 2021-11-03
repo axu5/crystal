@@ -1,9 +1,9 @@
-import middleware from "./utils/middleware";
+import middleware from "../utils/middleware";
 import validator from "email-validator";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
-import getDb from "./database";
-import { createAccessToken, createRefreshToken } from "./tokenUtils";
+import getDb from "../database";
+import { createAccessToken, createRefreshToken } from "../tokenUtils";
 
 const saltRounds = 10;
 
@@ -12,7 +12,13 @@ export default async function signup(req, res) {
   const { users } = await getDb();
 
   try {
-    const { username, password, email } = req.body;
+    let { username, password, email, firstName, lastName } = req.body;
+    username = username.trim();
+    email = email.trim();
+    firstName = firstName.trim();
+    lastName = lastName.trim();
+
+    console.log(`username`, username);
     if (!(username || password || email)) {
       throw "make sure you have filled in a username, password, and an email";
     }
@@ -39,6 +45,30 @@ export default async function signup(req, res) {
       throw "password must include an upper case character";
     }
 
+    if (!firstName) {
+      throw "please enter your first name";
+    } else if (firstName.trim().length === 0) {
+      throw "please input something for your first name";
+    } else if (firstName.match(/ +/)) {
+      throw "first name cannot include spaces";
+    } else if (firstName.length > 30) {
+      throw "first name cannot be over 30 characters";
+    } else if (firstName.length === 0) {
+      throw "first name cannot be blank";
+    }
+
+    if (!lastName) {
+      throw "please enter your last name";
+    } else if (lastName.trim().length === 0) {
+      throw "please input something for your last name";
+    } else if (lastName.match(/ +/)) {
+      throw "last name cannot include spaces";
+    } else if (lastName.length > 30) {
+      throw "last name cannot be over 30 characters";
+    } else if (lastName.length === 0) {
+      throw "last name cannot be blank";
+    }
+
     const existing = await users.findOne({
       $or: [{ email }, { username }],
     });
@@ -49,14 +79,13 @@ export default async function signup(req, res) {
     const userObject = {
       username,
       email,
-      firstName: "", // TODO: add
-      lastName: "", // TODO: add
+      name: { first: firstName, last: lastName },
       address: "", // TODO: change
       password: await bcrypt.hash(password, saltRounds),
       wishlist: [],
       uuid: v4(),
       accountAge: new Date(),
-      id: await users.count(),
+      id: (await users.count()) + 1,
       purchased: false,
       purchases: [],
       discountsMade: [],

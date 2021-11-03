@@ -47,7 +47,6 @@ export async function createRefreshToken(res, uuid) {
 
   let session = await sessions.findOne({ uuid });
 
-  console.log("session :>> ", session);
   if (!session) {
     session = {
       tokenVersion: 0,

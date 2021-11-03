@@ -1,5 +1,5 @@
-import { clearTokens } from "./tokenUtils";
-import auth from "./utils/auth";
+import { clearTokens } from "../tokenUtils";
+import auth from "../utils/auth";
 
 export default async function login(req, res) {
   try {

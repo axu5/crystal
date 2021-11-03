@@ -10,6 +10,8 @@ export default function SignUp() {
   const [error, setError] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
 
@@ -22,6 +24,8 @@ export default function SignUp() {
     }
 
     const body = {
+      firstName,
+      lastName,
       username,
       email,
       password,
@@ -74,6 +78,22 @@ export default function SignUp() {
           name='username'
           id='username'
           placeholder='username'
+          required
+        />
+        <input
+          onChange={e => setFirstName(e.target.value)}
+          type='text'
+          name='first name'
+          id='firstname'
+          placeholder='first name'
+          required
+        />
+        <input
+          onChange={e => setLastName(e.target.value)}
+          type='text'
+          name='last name'
+          id='lastname'
+          placeholder='last name'
           required
         />
         <input
