@@ -1,5 +1,5 @@
 import getDb from "../database";
-import logout from "../logout";
+import logout from "./logout";
 import auth from "../utils/auth";
 
 export default async function login(req, res) {

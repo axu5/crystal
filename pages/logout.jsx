@@ -24,6 +24,7 @@ export default function Login() {
     return async e => {
       e.preventDefault();
       await makeAuthReq(`logout${type}`);
+      localStorage.removeItem("cart");
       router.push("/");
     };
   };

@@ -1,11 +1,9 @@
-import Product from "../../components/Product";
+import AllProducts from "../../components/AllProducts";
 
 export default function Catalogue({ products }) {
   return (
     <div>
-      {products.map((data, i) => {
-        return <Product data={data} key={i} />;
-      })}
+      <AllProducts products={products} />
     </div>
   );
 }

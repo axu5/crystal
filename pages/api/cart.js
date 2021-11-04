@@ -6,9 +6,6 @@ export default async function authGetUser(req, res) {
     const user = await auth(req, res);
 
     switch (req.method) {
-      case "GET":
-        await getCart(req, res, user);
-        break;
       case "POST":
         await postCart(req, res, user);
         break;
@@ -18,22 +15,16 @@ export default async function authGetUser(req, res) {
   }
 }
 
-async function getCart(req, res, user) {
-  const returnPayload = {
-    // @ts-ignore
-    username: user.username,
-    // @ts-ignore
-    cart: user.cart,
-  };
-
-  res.status(200).send(returnPayload);
-}
-async function postCart(req, res, user) {
-  const { cart } = req.body;
+// update cart
+async function postCart(req, res, { uuid }) {
+  const { cart } = JSON.parse(req.body);
+  if (!cart) {
+    return res.json({ success: false });
+  }
 
   const { users } = await getDb();
 
-  await users.updateOne({ uuid: user.uuid }, { $set: { cart } });
+  await users.updateOne({ uuid: uuid }, { $set: { cart } });
 
   res.json({ success: true });
 }

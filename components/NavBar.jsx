@@ -9,12 +9,14 @@ import { getUser } from "../utils/getUser";
 export default function NavBar() {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       const _user = await getUser();
       console.log(`_user`, _user);
       setUser(_user);
+      setLoading(false);
     })();
   }, [router]);
 
@@ -36,8 +38,12 @@ export default function NavBar() {
               <Link href='/logout'>
                 <a className={styles.pageLink}>logout</a>
               </Link>
-              <h1>welcome {user.username}</h1>
+              <h1 className={styles.user}>
+                welcome {user.name.first}
+              </h1>
             </>
+          ) : loading ? (
+            <>Loading...</>
           ) : (
             <>
               {" "}

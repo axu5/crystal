@@ -26,7 +26,6 @@ export default async function auth(req, res, makeAccessToken = true) {
       const at =
         // @ts-ignore
         await createAccessToken(res, validRt.uuid);
-      console.log("at :>> ", at);
       return decode(at);
     }
 

@@ -15,13 +15,13 @@ export default function ProductPage({ product }) {
   useEffect(() => {
     (async () => {
       setUser(await getUser());
-      const cart = JSON.parse(localStorage.getItem("cart"));
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
       setInCart(
-        !!cart.filter((/** @type {string} */ i) => i === product.slug)
+        !!cart.some((/** @type {string} */ i) => i === product.slug)
           .length
       );
     })();
-  }, []);
+  }, [product.slug]);
 
   const getShare = () => {
     const currentUri =
@@ -65,27 +65,27 @@ export default function ProductPage({ product }) {
 
     localStorage.setItem(cartKey, JSON.stringify(cart));
 
-    setInCart(
-      !!cart.filter((/** @type {string} */ i) => i === product.slug)
-        .length
-    );
-
     if (user) {
       const res = await fetch(`http://localhost:3000/api/cart`, {
         method: "POST",
         headers: {
-          accept: "application/json",
+          Accept: "application/json",
         },
-        body: JSON.stringify(cart),
+        body: JSON.stringify({ cart }),
       });
 
       const data = await res.json();
 
       if (data.success) {
+        setInCart(!inCart);
         return;
       } else {
-        console.log("data :>> ", data);
+        setInCart(inCart);
       }
+    } else {
+      setInCart(
+        !!cart.some((/** @type {string} */ i) => i === product.slug)
+      );
     }
   };
 

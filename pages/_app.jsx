@@ -1,13 +1,16 @@
+import Head from "next/head";
+
 import "../styles/globals.css";
 import NavBar from "../components/NavBar";
 
-function MyApp({ Component, pageProps }) {
+export default function App({ Component, pageProps }) {
   return (
     <>
+      <Head>
+        <link rel='icon' href='/logo.png' />
+      </Head>
       <NavBar />
       <Component {...pageProps} />
     </>
   );
 }
-
-export default MyApp;

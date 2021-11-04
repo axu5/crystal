@@ -92,6 +92,12 @@ export default async function signup(req, res) {
       cart: [],
       purchasesMade: 0,
       redeemedCodes: [],
+      accountType: {
+        // according to specification
+        // https://www.evernote.com/client/web#?n=ed25ab3e-c7a0-19fe-2c21-38610c87ab24&
+        title: "customer",
+        permissions: 1,
+      },
     };
 
     await users.insertOne(userObject);
