@@ -2,6 +2,8 @@ import middleware from "../utils/middleware";
 import validator from "email-validator";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
+import { verify } from "hcaptcha";
+
 import getDb from "../database";
 import { createAccessToken, createRefreshToken } from "../tokenUtils";
 
@@ -9,10 +11,25 @@ const saltRounds = 10;
 
 export default async function signup(req, res) {
   await middleware(req, res);
-  const { users } = await getDb();
 
   try {
-    let { username, password, email, firstName, lastName } = req.body;
+    let { username, password, email, firstName, lastName, token } =
+      req.body;
+
+    if (!token) {
+      throw "please complete the captcha";
+    }
+
+    // this process may throw error
+    let { success } = await verify(
+      process.env.HCAPTCHA_SECRET,
+      token
+    );
+    if (!success) {
+      throw "please complete the captcha";
+    }
+
+    const { users } = await getDb();
     username = username.trim();
     email = email.trim();
     firstName = firstName.trim();
@@ -110,6 +127,7 @@ export default async function signup(req, res) {
 
     res.status(200).json({ success: true });
   } catch (e) {
-    res.status(418).json({ success: false, error: e });
+    console.error("e :>>", e);
+    res.status(400).json({ success: false, error: e });
   }
 }

@@ -1,6 +1,12 @@
 import getDb from "./database";
 import auth from "./utils/auth";
 
+/**
+ * @param {{ cookies: { accessToken: any; refreshToken: any; }; }} req
+ * @param {import("next").NextApiResponse<any>} res
+ *
+ * @returns {Promise<void>} resolves a user, if no user is resolved, resolves null
+ */
 export default async function authGetUser(req, res) {
   try {
     const { uuid } = await auth(req, res);
@@ -39,6 +45,6 @@ export default async function authGetUser(req, res) {
 
     res.status(200).json({ user });
   } catch (e) {
-    res.status(401).json({ user: null });
+    res.status(200).json({ user: null });
   }
 }

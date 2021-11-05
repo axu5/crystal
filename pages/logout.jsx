@@ -1,5 +1,11 @@
 import { useRouter } from "next/router";
 import { makeAuthReq } from "../utils/makeAuthReq";
+import { localStorageKeys } from "../constants";
+
+const [userKey, cartKey] = [
+  localStorageKeys.user,
+  localStorageKeys.cart,
+];
 
 export default function Login() {
   const router = useRouter();
@@ -24,7 +30,8 @@ export default function Login() {
     return async e => {
       e.preventDefault();
       await makeAuthReq(`logout${type}`);
-      localStorage.removeItem("cart");
+      localStorage.removeItem(cartKey);
+      localStorage.removeItem(userKey);
       router.push("/");
     };
   };

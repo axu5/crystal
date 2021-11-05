@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+
 import { makeAuthReq } from "../utils/makeAuthReq";
 
 export default function SignUp() {
@@ -14,9 +16,15 @@ export default function SignUp() {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
+  const [token, setToken] = useState("");
+  const captcha = useRef();
 
   const signupAction = async e => {
     e.preventDefault();
+
+    if (!token) {
+      setError("you must verify the captcha");
+    }
 
     if (password !== passwordCheck) {
       setError("passwords are not equal");
@@ -29,6 +37,7 @@ export default function SignUp() {
       username,
       email,
       password,
+      token,
     };
 
     // const res = await fetch("http://localhost:3000/api/signup", {
@@ -55,6 +64,9 @@ export default function SignUp() {
         typeof error === "object" ? JSON.stringify(error) : error
       );
     }
+    // @ts-ignore
+    captcha.current.resetCaptcha();
+    setToken("");
   };
 
   return (
@@ -119,6 +131,14 @@ export default function SignUp() {
           id='passwordcheck'
           placeholder='repeat your password'
           required
+        />
+
+        {/* @ts-ignore */}
+        <HCaptcha
+          ref={captcha}
+          sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+          onVerify={(token, _ekey) => setToken(token)}
+          onExpire={e => setToken("")}
         />
 
         <button type='submit'>Sign up!</button>

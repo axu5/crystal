@@ -14,7 +14,6 @@ export default function NavBar() {
   useEffect(() => {
     (async () => {
       const _user = await getUser();
-      console.log(`_user`, _user);
       setUser(_user);
       setLoading(false);
     })();
@@ -38,15 +37,14 @@ export default function NavBar() {
               <Link href='/logout'>
                 <a className={styles.pageLink}>logout</a>
               </Link>
-              <h1 className={styles.user}>
-                welcome {user.name.first}
-              </h1>
+              <span className={styles.user}>
+                welcome {user.username}
+              </span>
             </>
           ) : loading ? (
             <>Loading...</>
           ) : (
             <>
-              {" "}
               <Link href='/login'>
                 <a className={styles.pageLink}>login</a>
               </Link>
