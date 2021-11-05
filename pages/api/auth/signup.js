@@ -1,15 +1,17 @@
 import middleware from "../utils/middleware";
-import validator from "email-validator";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
 import fetch from "node-fetch";
 
-// import { verify } from "hcaptcha";
-
 import getDb from "../database";
 import { createAccessToken, createRefreshToken } from "../tokenUtils";
-
-const saltRounds = 10;
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+  validateUsername,
+} from "./validators";
+import { saltRounds } from "../constants";
 
 export default async function signup(req, res) {
   await middleware(req, res);
@@ -21,22 +23,6 @@ export default async function signup(req, res) {
     if (!token) {
       throw "please complete the captcha";
     }
-
-    // console.log("token :>>", token);
-    // console.log(
-    //   "process.env.HCAPTCHA_SECRET :>> ",
-    //   process.env.HCAPTCHA_SECRET
-    // );
-
-    // this process may throw error
-    // const { success, "error-codes": errorCodes } = await verify(
-    //   process.env.HCAPTCHA_SECRET,
-    //   encodeURI(token)
-    // );
-    // if (!success) {
-    //   console.error("captcha failed", errorCodes);
-    //   throw "captcha failed";
-    // }
 
     const details = {
       response: token,
@@ -84,51 +70,11 @@ export default async function signup(req, res) {
       throw "make sure you have filled in a username, password, and an email";
     }
 
-    if (username.length < 3) {
-      throw "username has to be 3 or more characters";
-    } else if (username.length >= 20) {
-      throw "username must be less than 20 characters";
-    }
-
-    if (!validator.validate(email)) {
-      throw "enter a valid email";
-    }
-
-    if (password.length < 8) {
-      throw "password must be 8 or more characters";
-    } else if (password.length > 30) {
-      throw "password must be 30 or less characters";
-    } else if (!password.match(/[0-9]/)) {
-      throw "password must include a number";
-    } else if (!password.match(/[a-z]/)) {
-      throw "password must include a lower case character";
-    } else if (!password.match(/[A-Z]/)) {
-      throw "password must include an upper case character";
-    }
-
-    if (!firstName) {
-      throw "please enter your first name";
-    } else if (firstName.trim().length === 0) {
-      throw "please input something for your first name";
-    } else if (firstName.match(/ +/)) {
-      throw "first name cannot include spaces";
-    } else if (firstName.length > 30) {
-      throw "first name cannot be over 30 characters";
-    } else if (firstName.length === 0) {
-      throw "first name cannot be blank";
-    }
-
-    if (!lastName) {
-      throw "please enter your last name";
-    } else if (lastName.trim().length === 0) {
-      throw "please input something for your last name";
-    } else if (lastName.match(/ +/)) {
-      throw "last name cannot include spaces";
-    } else if (lastName.length > 30) {
-      throw "last name cannot be over 30 characters";
-    } else if (lastName.length === 0) {
-      throw "last name cannot be blank";
-    }
+    validateUsername(username);
+    validateEmail(email);
+    validatePassword(password);
+    validateName(firstName);
+    validateName(lastName);
 
     const existing = await users.findOne({
       $or: [{ email }, { username }],

@@ -17,3 +17,5 @@ export const defaultCookieOptions = {
   // domain: `${process.env.BASE_DOMAIN}:${process.env.PORT}`,
   path: "/",
 };
+
+export const saltRounds = 10;

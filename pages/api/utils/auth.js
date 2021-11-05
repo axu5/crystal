@@ -3,8 +3,6 @@ import { decode, verify } from "jsonwebtoken";
 import middleware from "./middleware";
 import getDb from "../database";
 import { clearTokens, createAccessToken } from "../tokenUtils";
-import setCookie from "./setCookie";
-import { Tokens } from "../constants";
 
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
 
@@ -14,11 +12,11 @@ const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
  *
  * @return {Promise} user
  */
-export default async function auth(req, res, makeAccessToken = true) {
+export default async function auth(req, res) {
   await middleware(req, res);
   const { accessToken, refreshToken } = req.cookies;
 
-  const validAt = await verifyAccess(accessToken);
+  let validAt = await verifyAccess(accessToken);
   const validRt = await verifyRefresh(refreshToken);
 
   if (validRt) {
@@ -26,7 +24,7 @@ export default async function auth(req, res, makeAccessToken = true) {
       const at =
         // @ts-ignore
         await createAccessToken(res, validRt.uuid);
-      return decode(at);
+      validAt = decode(at);
     }
 
     // @ts-ignore
@@ -37,6 +35,9 @@ export default async function auth(req, res, makeAccessToken = true) {
   }
 }
 
+/**
+ * @param {string} at
+ */
 async function verifyAccess(at) {
   try {
     const accessTokenPayload = verify(at, ACCESS_TOKEN_SECRET);
@@ -47,6 +48,9 @@ async function verifyAccess(at) {
   }
 }
 
+/**
+ * @param {string} rt
+ */
 async function verifyRefresh(rt) {
   try {
     const { sessions } = await getDb();

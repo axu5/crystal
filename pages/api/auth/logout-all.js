@@ -11,11 +11,6 @@ export default async function login(req, res) {
 
     await sessions.updateOne({ uuid }, { $inc: { tokenVersion: 1 } });
 
-    console.log(
-      "sessions.findOne({uuid}) :>> ",
-      await sessions.findOne({ uuid })
-    );
-
     res.status(200).json({ success: true });
   } catch (e) {
     res.status(401).json({ success: false, error: e });

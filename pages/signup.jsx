@@ -23,8 +23,6 @@ export default function SignUp() {
   const [token, setToken] = useState("");
   const captcha = useRef();
 
-  console.log(`username`, username);
-
   useEffect(() => {
     // @ts-ignore
     if (un) setUsername(un);
@@ -61,20 +59,8 @@ export default function SignUp() {
       username,
       email,
       password,
-      token: "10000000-aaaa-bbbb-cccc-000000000001",
+      token,
     };
-
-    // const res = await fetch("http://localhost:3000/api/signup", {
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //   },
-    //   method: "POST",
-    //   credentials: "same-origin",
-    //   body: JSON.stringify(body),
-    // });
-
-    // const data = await res.json();
 
     const data = await makeAuthReq("signup", body);
 
