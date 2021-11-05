@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
 import { makeAuthReq } from "../utils/makeAuthReq";
+import { getUser } from "../utils/getUser";
 
 export default function Login() {
   const router = useRouter();
-  const { redirect } = router.query;
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const { redirect } = router.query;
+  const redirectPath = redirect ? `/${redirect}` : "/";
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      if (user !== null) router.push(redirectPath);
+    })();
+  }, [router, redirectPath]);
 
   const loginAction = async e => {
     e.preventDefault();
@@ -47,7 +58,7 @@ export default function Login() {
         <>
           <div>{error}</div>
           <div>
-            did you meant to sign up? (
+            did you mean to sign up? (
             <Link href='/signup' passHref>
               <a>click here!</a>
             </Link>

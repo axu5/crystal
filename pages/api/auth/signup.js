@@ -2,7 +2,9 @@ import middleware from "../utils/middleware";
 import validator from "email-validator";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
-import { verify } from "hcaptcha";
+import fetch from "node-fetch";
+
+// import { verify } from "hcaptcha";
 
 import getDb from "../database";
 import { createAccessToken, createRefreshToken } from "../tokenUtils";
@@ -20,13 +22,55 @@ export default async function signup(req, res) {
       throw "please complete the captcha";
     }
 
+    // console.log("token :>>", token);
+    // console.log(
+    //   "process.env.HCAPTCHA_SECRET :>> ",
+    //   process.env.HCAPTCHA_SECRET
+    // );
+
     // this process may throw error
-    let { success } = await verify(
-      process.env.HCAPTCHA_SECRET,
-      token
-    );
+    // const { success, "error-codes": errorCodes } = await verify(
+    //   process.env.HCAPTCHA_SECRET,
+    //   encodeURI(token)
+    // );
+    // if (!success) {
+    //   console.error("captcha failed", errorCodes);
+    //   throw "captcha failed";
+    // }
+
+    const details = {
+      response: token,
+      secret: process.env.HCAPTCHA_SECRET,
+      sitekey: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY,
+    };
+
+    const formBody = [];
+    for (const property in details) {
+      const encodedKey = encodeURIComponent(property);
+      const encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+
+    console.log('formBody.join("&") :>>', formBody.join("&"));
+
+    const response = await fetch("https://hcaptcha.com/siteverify", {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      method: "POST",
+      body: formBody.join("&"),
+    });
+
+    const data = await response.json();
+
+    console.log("data :>> ", data);
+
+    // @ts-ignore
+    const { success, "error-codes": errorCodes } = data;
+
     if (!success) {
-      throw "please complete the captcha";
+      console.error("captcha failed", errorCodes);
+      throw "captcha failed";
     }
 
     const { users } = await getDb();

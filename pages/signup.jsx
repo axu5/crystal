@@ -1,13 +1,17 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import { makeAuthReq } from "../utils/makeAuthReq";
+import { getUser } from "../utils/getUser";
 
 export default function SignUp() {
   const router = useRouter();
-  const { redirect } = router.query;
+
+  const { un, em, fn, ln, redirect } = router.query;
+  const redirectPath = redirect ? `/${redirect}` : "/";
 
   const [error, setError] = useState("");
   const [username, setUsername] = useState("");
@@ -19,10 +23,30 @@ export default function SignUp() {
   const [token, setToken] = useState("");
   const captcha = useRef();
 
+  console.log(`username`, username);
+
+  useEffect(() => {
+    // @ts-ignore
+    if (un) setUsername(un);
+    // @ts-ignore
+    if (em) setEmail(em);
+    // @ts-ignore
+    if (fn) setFirstName(fn);
+    // @ts-ignore
+    if (ln) setLastName(ln);
+  }, [un, em, fn, ln]);
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      if (user !== null) router.push(redirectPath);
+    })();
+  }, [router, redirectPath]);
+
   const signupAction = async e => {
     e.preventDefault();
 
-    if (!token) {
+    if (!token || token === "") {
       setError("you must verify the captcha");
     }
 
@@ -37,7 +61,7 @@ export default function SignUp() {
       username,
       email,
       password,
-      token,
+      token: "10000000-aaaa-bbbb-cccc-000000000001",
     };
 
     // const res = await fetch("http://localhost:3000/api/signup", {
@@ -58,7 +82,7 @@ export default function SignUp() {
 
     if (success) {
       // redirect user
-      router.push(redirect ? `/${redirect}` : "/");
+      router.push(redirectPath);
     } else {
       setError(
         typeof error === "object" ? JSON.stringify(error) : error
@@ -70,79 +94,88 @@ export default function SignUp() {
   };
 
   return (
-    <div>
-      {error !== "" && (
-        <>
-          <div>{error}</div>
-          <div>
-            did you meant to login? (
-            <Link href='/login' passHref>
-              <a>click here!</a>
-            </Link>
-            )
-          </div>
-        </>
-      )}
-      <form onSubmit={signupAction}>
-        <input
-          onChange={e => setUsername(e.target.value)}
-          type='text'
-          name='username'
-          id='username'
-          placeholder='username'
-          required
-        />
-        <input
-          onChange={e => setFirstName(e.target.value)}
-          type='text'
-          name='first name'
-          id='firstname'
-          placeholder='first name'
-          required
-        />
-        <input
-          onChange={e => setLastName(e.target.value)}
-          type='text'
-          name='last name'
-          id='lastname'
-          placeholder='last name'
-          required
-        />
-        <input
-          onChange={e => setEmail(e.target.value)}
-          type='email'
-          name='email'
-          id='email'
-          placeholder='email'
-          required
-        />
-        <input
-          onChange={e => setPassword(e.target.value)}
-          type='password'
-          name='password'
-          id='password'
-          placeholder='password'
-          required
-        />
-        <input
-          onChange={e => setPasswordCheck(e.target.value)}
-          type='password'
-          name='passwordcheck'
-          id='passwordcheck'
-          placeholder='repeat your password'
-          required
-        />
+    <>
+      <Head>
+        <title>Sign up!</title>
+      </Head>
+      <div>
+        {error !== "" && (
+          <>
+            <div>{error}</div>
+            <div>
+              did you mean to login? (
+              <Link href='/login' passHref>
+                <a>click here!</a>
+              </Link>
+              )
+            </div>
+          </>
+        )}
+        <form onSubmit={signupAction}>
+          <input
+            onChange={e => setUsername(e.target.value)}
+            type='text'
+            name='username'
+            id='username'
+            placeholder='username'
+            value={username}
+            required
+          />
+          <input
+            onChange={e => setEmail(e.target.value)}
+            type='email'
+            name='email'
+            id='email'
+            placeholder='email'
+            value={email}
+            required
+          />
+          <input
+            onChange={e => setFirstName(e.target.value)}
+            type='text'
+            name='first name'
+            id='firstname'
+            placeholder='first name'
+            value={firstName}
+            required
+          />
+          <input
+            onChange={e => setLastName(e.target.value)}
+            type='text'
+            name='last name'
+            id='lastname'
+            placeholder='last name'
+            value={lastName}
+            required
+          />
+          <input
+            onChange={e => setPassword(e.target.value)}
+            type='password'
+            name='password'
+            id='password'
+            placeholder='password'
+            required
+          />
+          <input
+            onChange={e => setPasswordCheck(e.target.value)}
+            type='password'
+            name='passwordcheck'
+            id='passwordcheck'
+            placeholder='repeat your password'
+            required
+          />
 
-        {/* @ts-ignore */}
-        <HCaptcha
-          ref={captcha}
-          sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-          onVerify={(token, _ekey) => setToken(token)}
-          onExpire={e => setToken("")}
-        />
+          {/* @ts-ignore */}
+          <HCaptcha
+            ref={captcha}
+            sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+            onVerify={(token, _ekey) => setToken(token)}
+            onExpire={e => setToken("")}
+          />
 
-        <button type='submit'>Sign up!</button>
-      </form>
-    </div>
+          <button type='submit'>Sign up!</button>
+        </form>
+      </div>
+    </>
   );
 }

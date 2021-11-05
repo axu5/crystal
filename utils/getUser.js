@@ -1,12 +1,11 @@
 import { isServer } from "./isServer";
 import { localStorageKeys } from "../constants";
 
-const userKey = localStorageKeys.user;
-
 export async function getUser() {
   if (isServer()) return;
 
   try {
+    const userKey = localStorageKeys.user;
     let _user = localStorage.getItem(userKey);
 
     if (!_user || _user === "null" || _user === "") {

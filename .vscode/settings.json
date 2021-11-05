@@ -1,5 +1,11 @@
 {
-  "cSpell.words": ["crystalcabins", "ekey", "HCAPTCHA", "Qand"],
+  "cSpell.words": [
+    "crystalcabins",
+    "ekey",
+    "HCAPTCHA",
+    "Qand",
+    "sitekey"
+  ],
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -12,5 +18,7 @@
     "**/.settings": true,
     "**/.factorypath": true,
     "**/node_modules": true
-  }
+  },
+  "spellright.language": [],
+  "spellright.documentTypes": ["markdown", "latex"]
 }
