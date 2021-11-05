@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { makeAuthReq } from "../utils/makeAuthReq";
@@ -53,38 +54,43 @@ export default function Login() {
   };
 
   return (
-    <div>
-      {error !== "" && (
-        <>
-          <div>{error}</div>
-          <div>
-            did you mean to sign up? (
-            <Link href='/signup' passHref>
-              <a>click here!</a>
-            </Link>
-            )
-          </div>
-        </>
-      )}
-      <form onSubmit={loginAction}>
-        <input
-          onChange={e => setUsername(e.target.value)}
-          type='text'
-          name='identity'
-          id='input'
-          placeholder='username or email'
-          required
-        />
-        <input
-          onChange={e => setPassword(e.target.value)}
-          type='password'
-          name='password'
-          id='password'
-          placeholder='password'
-          required
-        />
-        <button type='submit'>Login!</button>
-      </form>
-    </div>
+    <>
+      <Head>
+        <title>Login to Crystal Cabins</title>
+      </Head>
+      <div>
+        {error !== "" && (
+          <>
+            <div>{error}</div>
+            <div>
+              did you mean to sign up? (
+              <Link href='/signup' passHref>
+                <a>click here!</a>
+              </Link>
+              )
+            </div>
+          </>
+        )}
+        <form onSubmit={loginAction}>
+          <input
+            onChange={e => setUsername(e.target.value)}
+            type='text'
+            name='identity'
+            id='input'
+            placeholder='username or email'
+            required
+          />
+          <input
+            onChange={e => setPassword(e.target.value)}
+            type='password'
+            name='password'
+            id='password'
+            placeholder='password'
+            required
+          />
+          <button type='submit'>Login!</button>
+        </form>
+      </div>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 // @ts-ignore
 import styles from "../../styles/ProductPage.module.css";
 import { getUser } from "../../utils/getUser";
+import CategoryHead from "../../components/CategoryHead";
 
 export default function ProductPage({ product }) {
   const router = useRouter();
@@ -90,32 +91,35 @@ export default function ProductPage({ product }) {
   };
 
   return (
-    <div className={styles.wrapper}>
-      {/* <Image
+    <>
+      <CategoryHead title={product.name} image={product.images[0]} />
+      <div className={styles.wrapper}>
+        {/* <Image
         src={product.image}
         alt={`${product.title} product image`}
         width={500}
         height={500}
       /> */}
-      <h1 className={styles.title}>{product.name}</h1>
-      <p>{product.description}</p>
-      <p>{product.price / 100}&euro;</p>
-      <p>{product.views} views</p>
-      <p>{product.hearts} hearts</p>
-      <button onClick={getShare}>Share</button>
-      {user && (
-        <button
-          onClick={makeHeart}
-          className={heart ? styles.hearted : styles.notHearted}
-        >
-          heart
+        <h1 className={styles.title}>{product.name}</h1>
+        <p>{product.description}</p>
+        <p>{product.price / 100}&euro;</p>
+        <p>{product.views} views</p>
+        <p>{product.hearts} hearts</p>
+        <button onClick={getShare}>Share</button>
+        {user && (
+          <button
+            onClick={makeHeart}
+            className={heart ? styles.hearted : styles.notHearted}
+          >
+            heart
+          </button>
+        )}
+        <button onClick={addToCart}>
+          {inCart ? "remove from cart" : "add to cart"}
         </button>
-      )}
-      <button onClick={addToCart}>
-        {inCart ? "remove from cart" : "add to cart"}
-      </button>
-      {/* <button>buy now</button> */}
-    </div>
+        {/* <button>buy now</button> */}
+      </div>
+    </>
   );
 }
 

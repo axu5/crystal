@@ -1,10 +1,14 @@
 import AllProducts from "../../components/AllProducts";
+import CategoryHead from "../../components/CategoryHead";
 
 export default function Catalogue({ products }) {
   return (
-    <div>
-      <AllProducts products={products} />
-    </div>
+    <>
+      <CategoryHead title='catalogue' image={products[0].images[0]} />
+      <div>
+        <AllProducts products={products} />
+      </div>
+    </>
   );
 }
 

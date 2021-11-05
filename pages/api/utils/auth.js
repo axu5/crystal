@@ -1,4 +1,4 @@
-import { decode, verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 import middleware from "./middleware";
 import getDb from "../database";
@@ -24,7 +24,7 @@ export default async function auth(req, res) {
       const at =
         // @ts-ignore
         await createAccessToken(res, validRt.uuid);
-      validAt = decode(at);
+      validAt = jwt.decode(at);
     }
 
     // @ts-ignore
@@ -40,7 +40,7 @@ export default async function auth(req, res) {
  */
 async function verifyAccess(at) {
   try {
-    const accessTokenPayload = verify(at, ACCESS_TOKEN_SECRET);
+    const accessTokenPayload = jwt.verify(at, ACCESS_TOKEN_SECRET);
 
     return accessTokenPayload;
   } catch {
@@ -54,7 +54,7 @@ async function verifyAccess(at) {
 async function verifyRefresh(rt) {
   try {
     const { sessions } = await getDb();
-    const refreshTokenPayload = verify(rt, REFRESH_TOKEN_SECRET);
+    const refreshTokenPayload = jwt.verify(rt, REFRESH_TOKEN_SECRET);
 
     const session = await sessions.findOne({
       // @ts-ignore

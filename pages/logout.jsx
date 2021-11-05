@@ -1,4 +1,6 @@
 import { useRouter } from "next/router";
+import Head from "next/head";
+
 import { makeAuthReq } from "../utils/makeAuthReq";
 import { localStorageKeys } from "../constants";
 
@@ -21,9 +23,15 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <button onClick={logout("")}>Log out!</button>
-      <button onClick={logout("-all")}>Log out all!</button>
-    </div>
+    <>
+      <Head>
+        <title>Logout</title>
+      </Head>
+
+      <div>
+        <button onClick={logout("")}>Log out!</button>
+        <button onClick={logout("-all")}>Log out all!</button>
+      </div>
+    </>
   );
 }

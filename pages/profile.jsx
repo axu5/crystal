@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
+
 import { getUser } from "../utils/getUser";
 import { makeAuthReq } from "../utils/makeAuthReq";
 
@@ -45,6 +47,10 @@ export default function Profile() {
 
   return (
     <>
+      <Head>
+        <title>{user && user.username + "'s "}profile</title>
+      </Head>
+
       {user ? (
         <div>
           <h1>

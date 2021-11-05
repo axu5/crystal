@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 
 import getDb from "../api/database";
@@ -66,6 +67,11 @@ export default function Search({ products }) {
 
   return (
     <>
+      <Head>
+        <title>
+          {q ? `searching: ${q}` : "search the crystal cabins"}
+        </title>
+      </Head>
       {!loading ? (
         error ? (
           <h1>Error {error}</h1>

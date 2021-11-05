@@ -82,7 +82,7 @@ export default function SignUp() {
   return (
     <>
       <Head>
-        <title>Sign up!</title>
+        <title>Sign up to Crystal Cabins!</title>
       </Head>
       <div>
         {error !== "" && (

@@ -8,11 +8,11 @@ const meta = {
     "Crystal Cabins is a jewelry company based in Malta. We sell rings to people who want to donate money to good causes, and get something great in return. #teamseas #teamtrees",
 };
 
-export default function CategoryHead({ image, name }) {
-  name = name ?? meta.title;
+export default function CategoryHead({ image, title }) {
+  title = title ?? meta.title;
   return (
     <Head>
-      <title>{name}</title>
+      <title>{title}</title>
       {/* Most important meta tags */}
       <meta
         httpEquiv='Content-Type'
@@ -28,7 +28,7 @@ export default function CategoryHead({ image, name }) {
       <meta name='author' content='Aleksanteri Aho' />
 
       {/* <!-- Open Graph data --> */}
-      <meta property='og:title' content={name} />
+      <meta property='og:title' content={title} />
       <meta property='og:type' content='website' />
       <meta property='og:url' content='https://crystalcabins.com/' />
       <meta property='og:image' content={image} />
