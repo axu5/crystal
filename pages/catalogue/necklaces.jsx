@@ -7,7 +7,7 @@ export default function Rings({ necklaces }) {
   return (
     <>
       <CategoryHead
-        title='Necklaces! Fashionable and Environmentally aware!'
+        title='Necklaces! Crystal Cabins Catalogue!'
         image={necklaces[0]?.images[0] ?? ""}
       />
       <div>
@@ -21,8 +21,9 @@ export default function Rings({ necklaces }) {
 export async function getServerSideProps() {
   const { products } = await getDb();
 
+  const q = { $in: ["necklace", "necklaces"] };
   const _necklaces = await products.find({
-    tags: { $in: ["necklace", "necklaces"] },
+    $or: [{ tags: q }, { name: q }],
   });
 
   const necklaces = await _necklaces.toArray();

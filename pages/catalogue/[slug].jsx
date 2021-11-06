@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 // @ts-ignore
-import styles from "../../styles/ProductPage.module.css";
+import styles from "../../styles/ProductPage.module.scss";
 import { getUser } from "../../utils/getUser";
 import CategoryHead from "../../components/CategoryHead";
 

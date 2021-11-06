@@ -7,7 +7,7 @@ export default function Rings({ rings }) {
   return (
     <>
       <CategoryHead
-        title='Rings! Fashionable and Environmentally aware!'
+        title='Rings! Crystal Cabins Catalogue!'
         image={rings[0]?.images[0] ?? ""}
       />
       <div>

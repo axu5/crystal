@@ -1,7 +1,7 @@
 import Head from "next/head";
 
 // @ts-ignore
-import styles from "../styles/FAQ.module.css";
+import styles from "../styles/FAQ.module.scss";
 
 function QuestionAnswerPair({ question, answer }) {
   return (
