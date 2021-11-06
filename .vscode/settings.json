@@ -4,7 +4,8 @@
     "ekey",
     "HCAPTCHA",
     "Qand",
-    "sitekey"
+    "sitekey",
+    "tailwindcss"
   ],
   "files.exclude": {
     "**/.git": true,
