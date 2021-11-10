@@ -19,6 +19,7 @@ export default function Rings({ rings }) {
 }
 
 export async function getServerSideProps() {
+  if (!isServer()) return;
   const { products } = await getDb();
 
   const _rings = await products.find({

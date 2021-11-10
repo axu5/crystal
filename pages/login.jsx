@@ -1,27 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { makeAuthReq } from "../utils/makeAuthReq";
-import { getUser } from "../utils/getUser";
+import getUser from "../utils/getUser";
+import { isServer } from "../utils/isServer";
 
-export default function Login() {
+export const getServerSideProps = getUser;
+
+export default function Login({ user }) {
   const router = useRouter();
+  const { redirect } = router.query;
+  const redirectPath = redirect ? `/${redirect}` : "/";
+
+  if (!isServer() && user !== null) router.push(redirectPath);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  const { redirect } = router.query;
-  const redirectPath = redirect ? `/${redirect}` : "/";
-
-  useEffect(() => {
-    (async () => {
-      const user = await getUser();
-      if (user !== null) router.push(redirectPath);
-    })();
-  }, [router, redirectPath]);
 
   const loginAction = async e => {
     e.preventDefault();
@@ -49,7 +46,8 @@ export default function Login() {
       );
     } else {
       // redirect user
-      router.push(redirect ? `/${redirect}` : "/");
+      await router.push(redirect ? `/${redirect}` : "/");
+      await router.reload();
     }
   };
 

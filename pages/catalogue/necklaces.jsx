@@ -1,6 +1,7 @@
 import getDb from "../api/database";
 import CategoryHead from "../../components/CategoryHead";
 import AllProducts from "../../components/AllProducts";
+import { isServer } from "../../utils/isServer";
 
 export default function Rings({ necklaces }) {
   console.log(`necklaces :>>`, necklaces);
@@ -19,6 +20,7 @@ export default function Rings({ necklaces }) {
 }
 
 export async function getServerSideProps() {
+  if (!isServer()) return;
   const { products } = await getDb();
 
   const q = { $in: ["necklace", "necklaces"] };

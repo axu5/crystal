@@ -21,5 +21,6 @@
     "**/node_modules": true
   },
   "spellright.language": [],
-  "spellright.documentTypes": ["markdown", "latex"]
+  "spellright.documentTypes": ["markdown", "latex"],
+  "git.ignoreLimitWarning": true
 }

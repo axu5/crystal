@@ -1,24 +1,42 @@
+import getDb from "../pages/api/database";
+import auth from "../pages/api/utils/auth";
 import { isServer } from "./isServer";
-import { localStorageKeys } from "../constants";
 
-export async function getUser() {
-  if (isServer()) return;
+export default async function getUser({ req, res }) {
+  if (!isServer()) return;
+  const { refreshToken } = req.cookies;
+  if (!refreshToken)
+    return {
+      props: {
+        user: null,
+      },
+    };
 
-  try {
-    const userKey = localStorageKeys.user;
-    let _user = localStorage.getItem(userKey);
+  const { uuid } = await auth(req, res);
+  const { users } = await getDb();
+  const user = await users.findOne({ uuid });
 
-    if (!_user || _user === "null" || _user === "") {
-      const res = await fetch(`http://localhost:3000/api/user`);
-      const { user } = await res.json();
+  const privateProperties = [
+    "password",
+    "address",
+    "email",
+    "uuid",
+    "id",
+    "_id",
+    "redeemedCodes",
+    "purchasesMade",
+    "discountsMade",
+    "purchases",
+    "purchased",
+    "phoneNumber",
+    "accountAge",
+  ];
 
-      _user = JSON.stringify(user);
-      // cache user in local storage
-      localStorage.setItem(userKey, _user);
-    }
+  privateProperties.forEach(prop => delete user[prop]);
 
-    return JSON.parse(_user);
-  } catch {
-    return null;
-  }
+  return {
+    props: {
+      user,
+    },
+  };
 }

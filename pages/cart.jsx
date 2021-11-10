@@ -1,20 +1,26 @@
-import { useState, useEffect } from "react";
 import Head from "next/head";
+import { Elements, PaymentElement } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
-import { getUser } from "../utils/getUser";
+// import { getUser } from "../utils/getUser";
 import { isServer } from "../utils/isServer";
 import { localStorageKeys } from "../constants";
+import getUser from "../utils/getUser";
 
-export default function Cart() {
+const stripePromise = loadStripe(process.env.STRIPE_PRIVATE_KEY);
+
+export const getServerSideProps = getUser;
+
+export default function Cart({ user }) {
   const cartKey = localStorageKeys.cart;
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      const _user = await getUser();
-      setUser(_user);
-    })();
-  }, []);
+  const cart =
+    (user && user.cart) ||
+    (!isServer()
+      ? JSON.parse(localStorage.getItem(cartKey)) || []
+      : []);
+
+  console.log(`cart`, cart);
 
   return (
     <>
@@ -26,43 +32,32 @@ export default function Cart() {
         </title>
       </Head>
       <div>
-        {user ? (
-          <>
-            <h1>{user.username}</h1>
-            <h1>
-              {user.name.first} {user.name.last}
-            </h1>
-            <p>
-              {user.cart
-                ? user.cart.map(
-                    (item, i) => (
-                      <div key={i}>
-                        {i + 1}) {item}
-                      </div>
-                    ),
-                    ""
-                  )
-                : "You have no items in your crystal cart"}
-            </p>
-          </>
-        ) : (
-          <>
-            <h1>you&apos;re not logged in</h1>
-            <p>
-              {!isServer() && localStorage.getItem(cartKey)
-                ? JSON.parse(localStorage.getItem(cartKey)).map(
-                    (item, i) => (
-                      <div key={i}>
-                        {i + 1}) {item}
-                      </div>
-                    ),
-                    ""
-                  )
-                : "You have no items in your crystal cart"}
-            </p>
-          </>
-        )}
+        <h1>you&apos;re {user ? "" : "not "}logged in</h1>
+        <p>
+          {cart && cart.length
+            ? cart.map(
+                (item, i) => (
+                  <div key={i}>
+                    {i + 1}) {item}
+                  </div>
+                ),
+                ""
+              )
+            : "You have no items in your crystal cart"}
+        </p>
+        <Elements stripe={stripePromise}>
+          <CheckoutForm />
+        </Elements>
       </div>
     </>
+  );
+}
+
+function CheckoutForm() {
+  return (
+    <form>
+      <PaymentElement />
+      <button>Submit</button>
+    </form>
   );
 }

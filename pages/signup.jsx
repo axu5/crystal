@@ -5,15 +5,20 @@ import { useRouter } from "next/router";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import { makeAuthReq } from "../utils/makeAuthReq";
-import { getUser } from "../utils/getUser";
+import getUser from "../utils/getUser";
+import { isServer } from "../utils/isServer";
 
-export default function SignUp() {
+export const getServerSideProps = getUser;
+
+export default function SignUp({ user }) {
   const router = useRouter();
 
   const { un, em, fn, ln, redirect } = router.query;
   const redirectPath = redirect ? `/${redirect}` : "/";
+  if (!isServer() && user !== null) router.push(redirectPath);
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -33,13 +38,6 @@ export default function SignUp() {
     // @ts-ignore
     if (ln) setLastName(ln);
   }, [un, em, fn, ln]);
-
-  useEffect(() => {
-    (async () => {
-      const user = await getUser();
-      if (user !== null) router.push(redirectPath);
-    })();
-  }, [router, redirectPath]);
 
   const signupAction = async e => {
     e.preventDefault();
@@ -68,7 +66,10 @@ export default function SignUp() {
 
     if (success) {
       // redirect user
-      router.push(redirectPath);
+      // router.push(redirectPath);
+      setSuccess(
+        `success, check your email (<Link href="https://mail.google.com/mail/u/?authuser=${email}"><a>gmail</a></Link>)`
+      );
     } else {
       setError(
         typeof error === "object" ? JSON.stringify(error) : error
@@ -85,6 +86,7 @@ export default function SignUp() {
         <title>Sign up to Crystal Cabins!</title>
       </Head>
       <div>
+        {success && <div className='bg-green-300'>{success}</div>}
         {error !== "" && (
           <>
             <div>{error}</div>

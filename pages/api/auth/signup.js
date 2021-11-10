@@ -12,6 +12,7 @@ import {
   validateUsername,
 } from "./validators";
 import { saltRounds } from "../constants";
+import sendEmail from "../utils/sendEmail";
 
 export default async function signup(req, res) {
   await middleware(req, res);
@@ -37,8 +38,6 @@ export default async function signup(req, res) {
       formBody.push(encodedKey + "=" + encodedValue);
     }
 
-    console.log('formBody.join("&") :>>', formBody.join("&"));
-
     const response = await fetch("https://hcaptcha.com/siteverify", {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -48,8 +47,6 @@ export default async function signup(req, res) {
     });
 
     const data = await response.json();
-
-    console.log("data :>> ", data);
 
     // @ts-ignore
     const { success, "error-codes": errorCodes } = data;
@@ -65,7 +62,6 @@ export default async function signup(req, res) {
     firstName = firstName.trim();
     lastName = lastName.trim();
 
-    console.log(`username`, username);
     if (!(username || password || email)) {
       throw "make sure you have filled in a username, password, and an email";
     }
@@ -83,6 +79,12 @@ export default async function signup(req, res) {
       throw "user with this email or username already exists";
     }
 
+    const uuid = v4();
+
+    const makeRnd = () =>
+      Math.random().toString(36).replace(/0\./g, "");
+    const emailToken = makeRnd() + makeRnd() + makeRnd() + makeRnd();
+
     const userObject = {
       username,
       email,
@@ -90,7 +92,7 @@ export default async function signup(req, res) {
       address: "", // TODO: change
       password: await bcrypt.hash(password, saltRounds),
       wishlist: [],
-      uuid: v4(),
+      uuid,
       accountAge: new Date(),
       id: (await users.count()) + 1,
       purchased: false,
@@ -105,7 +107,25 @@ export default async function signup(req, res) {
         title: "customer",
         permissions: 1,
       },
+      emailToken,
+      activated: false,
     };
+
+    console.log("email :>> ", email);
+
+    const subject = "verify crystal cabins account";
+    const body = `
+<h1>Crystal Cabins</h1>
+<h2>welcome ${username} to crystal cabins</h2>
+<br>
+<a href="${process.env.BASE_URI}/verify?uuid=${uuid}&token=${emailToken}">
+  Click here to verify your Crystal Cabins account
+</a>
+<a href="${process.env.BASE_URI}/deleteAccount?uuid=${uuid}">Click here if this wasn't you</a>
+`;
+
+    console.log(`email`, email);
+    // await sendEmail(email, subject, body);
 
     await users.insertOne(userObject);
 

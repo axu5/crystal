@@ -38,7 +38,7 @@ export default async function heart(req, res) {
     await updateUser(!heart);
     await updateProd(heart ? -1 : 1);
 
-    res.status(200).json({ success: true, heart });
+    res.status(200).json({ success: true, heart: !heart });
   } catch (e) {
     console.error(e);
     res.status(400).json({ success: false });
