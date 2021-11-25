@@ -3,7 +3,7 @@ import auth from "../utils/auth";
 
 export default async function login(req, res) {
   try {
-    await auth(req, res, false);
+    await auth(req, res);
     clearTokens(res);
 
     res.status(200).json({ success: true });

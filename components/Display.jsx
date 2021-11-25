@@ -2,8 +2,10 @@ import Link from "next/link";
 
 import DisplayGrid from "./DisplayGrid";
 import ArrowRight from "./assets/ArrowRight";
+import getTranslation from "../utils/getTranslation";
 
-export default function Display({ title, slug, items }) {
+export default function Display({ title, slug, items, lang }) {
+  const translator = getTranslation(lang);
   return (
     <div className='my-20'>
       <div className='flex flex-row justify-between my-5'>
@@ -16,13 +18,13 @@ export default function Display({ title, slug, items }) {
         {/* LINK */}
         <Link href={`/catalogue/${slug}`}>
           <a className='text-xl flex flex-row'>
-            View all
+            {translator("view_all")}
             <ArrowRight />
           </a>
         </Link>
       </div>
       {/* GRID */}
-      <DisplayGrid items={items} />
+      <DisplayGrid items={items} lang={lang} />
     </div>
   );
 }

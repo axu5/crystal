@@ -22,6 +22,8 @@ export default async function products(req, res) {
       "g"
     );
 
+    console.log("query :>> ", query);
+
     const inq = {
       $in: [query],
     };
@@ -37,6 +39,7 @@ export default async function products(req, res) {
     const products = await productsStore.find(tmp);
 
     const arr = await products.toArray();
+    console.log(`products`, arr);
 
     res.json(arr);
   }

@@ -2,6 +2,7 @@ import Head from "next/head";
 
 // @ts-ignore
 import styles from "../styles/FAQ.module.scss";
+import getTranslation from "../utils/getTranslation";
 
 function QuestionAnswerPair({ question, answer }) {
   return (
@@ -12,18 +13,19 @@ function QuestionAnswerPair({ question, answer }) {
   );
 }
 
-export default function Faq() {
+export default function Faq({ lang }) {
+  const translator = getTranslation(lang);
   return (
     <>
       <Head>
-        <title>Frequently Asked Questions</title>
+        <title>{translator("faq")}</title>
       </Head>
       <div>
         <h1>FAQ&apos;s</h1>
         <div className={styles.container}>
           <QuestionAnswerPair
-            question='How long does an order take?'
-            answer='Usually an order takes ---- days. If there is an issue please contact us on any of our social media'
+            question={translator("fq1")}
+            answer={translator("fa1")}
           />
         </div>
       </div>

@@ -1,8 +1,8 @@
-export default function BagOutline() {
+export default function SearchOutline() {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      className='h-5 w-5 mr-1 inline-block'
+      className='h-5 w-5 inline-block'
       fill='none'
       viewBox='0 0 24 24'
       stroke='currentColor'
@@ -11,7 +11,7 @@ export default function BagOutline() {
         strokeLinecap='round'
         strokeLinejoin='round'
         strokeWidth={2}
-        d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
+        d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
       />
     </svg>
   );

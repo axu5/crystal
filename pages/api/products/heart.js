@@ -6,10 +6,10 @@ export default async function heart(req, res) {
     const { uuid } = await auth(req, res);
     const { users, products } = await getDb();
 
-    const { product: productSlug } = JSON.parse(req.body);
+    const { product: productId } = JSON.parse(req.body);
 
     // verify product exists
-    const product = await products.findOne({ slug: productSlug });
+    const product = await products.findOne({ id: productId });
     if (!product) {
       throw "product doesn't exist";
     }
@@ -20,7 +20,7 @@ export default async function heart(req, res) {
     }
 
     const updateUser = async add => {
-      const payload = { wishlist: product.slug };
+      const payload = { wishlist: product.id };
       await users.updateOne(
         { uuid: user.uuid },
         add ? { $addToSet: payload } : { $pull: payload }
@@ -29,12 +29,12 @@ export default async function heart(req, res) {
 
     const updateProd = async multiple => {
       await products.updateOne(
-        { slug: productSlug },
+        { id: productId },
         { $inc: { hearts: multiple } }
       );
     };
 
-    let heart = user.wishlist.includes(productSlug);
+    let heart = user.wishlist.includes(productId);
     await updateUser(!heart);
     await updateProd(heart ? -1 : 1);
 

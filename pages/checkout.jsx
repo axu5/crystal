@@ -7,7 +7,9 @@ import { isServer } from "../utils/isServer";
 import { localStorageKeys } from "../constants";
 import getUser from "../utils/getUser";
 
-const stripePromise = loadStripe(process.env.STRIPE_PRIVATE_KEY);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PRIVATE_KEY
+);
 
 export const getServerSideProps = getUser;
 

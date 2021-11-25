@@ -26,3 +26,9 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.logo-animation {
+  :hover {
+    transform: scale(1.1);
+  }
+}

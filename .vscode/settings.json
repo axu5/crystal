@@ -1,9 +1,13 @@
 {
   "cSpell.words": [
+    "apos",
     "crystalcabins",
+    "discordapp",
     "ekey",
     "HCAPTCHA",
+    "larr",
     "Qand",
+    "rarr",
     "sitekey",
     "tailwindcss"
   ],
@@ -22,5 +26,6 @@
   },
   "spellright.language": [],
   "spellright.documentTypes": ["markdown", "latex"],
-  "git.ignoreLimitWarning": true
+  "git.ignoreLimitWarning": true,
+  "cSpell.ignoreWords": ["AQABAPAA", "BAAAAAAALAAAAAABAAEAAAICRAEA"]
 }

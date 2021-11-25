@@ -1,15 +1,21 @@
-export async function makeAuthReq(apiPath, body = {}) {
+export async function makeAuthReq(
+  apiPath,
+  body = {},
+  method = "POST"
+) {
   const res = await fetch(
     `http://localhost:3000/api/auth/${apiPath}`,
     {
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type":
+          method === "GET" ? undefined : "application/json",
       },
-      method: "POST",
-      body: JSON.stringify(body),
+      method,
+      body: method === "GET" ? undefined : JSON.stringify(body),
       credentials: "same-origin",
     }
   );
-  return res.json();
+
+  return await res.json();
 }

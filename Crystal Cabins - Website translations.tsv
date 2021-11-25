@@ -1,0 +1,26 @@
+variable	German (de)	English (en)	Finnish (fi)	Italian (it)	Korean (kr)	Polish (pl)	Turkish (tr)
+main_title	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins
+mission_statement		Shop environmentally and fashionable, fast	Shoppaile ymparistöllisesti ja muodikkaasti, nopeasti				
+login		Login	Kirjaudu sisään				
+signup		Sign up	Tee uusi tili				
+logout		Logout	Kirjaudu ulos				
+about		about	meistä				
+instagram		instagram	instagram				
+add_to_bag		add to bag	lisää kassiisi				
+remove_from_bag		remove from bag	poista kassistasi				
+privacy_policy		privacy policy	Tietosuojakäytöntä				
+terms_of_service		terms of service	käyttöehdot				
+view_all		view all	näytä kaikki				
+home		home	kotisivu				
+shop		shop	kauppa				
+bag		bag	kassi				
+copyright		Copyright Reserved by {main_title}	{main_title} in tekijänoikeudet pidätetään				
+necklaces		necklaces	kaulakorut				
+rings		rings	sormukset				
+views		views	näkökerrat				
+hearts		hearts	tykkäävät				
+share		share	jaa				
+heart		heart	tykkään				
+unheart		remove heart	en tykkää				
+welcome		welcome {}	tervetuloa {}				
+faq		faq	useimmat kysymykset				
