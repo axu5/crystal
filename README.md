@@ -1,3 +1,26 @@
+# todo list
+
+### [ ] translate pages, add locales.
+
+- [ ] install next-translate
+- [ ] add automatic conversion (run at server soft restart) from csv to json
+
+### [ ] discounts
+
+- [ ] discount creator
+- [ ] name
+- [ ] code
+- [ ] uses count
+- [ ] max uses
+- [ ] percentage discount (i.e. 0.15)
+- [ ] made by (uuid)
+- [ ] redeemed by who (arr of uuid)
+- [ ] redeeming
+- [ ] type
+  - [ ] 0: use by everyone
+  - [ ] 1: use by self
+  - [ ] 2: use by new user
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
