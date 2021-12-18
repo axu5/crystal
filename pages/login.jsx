@@ -2,6 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import useTranslation from "next-translate/useTranslation";
 
 import { makeAuthReq } from "../utils/makeAuthReq";
 import getUser from "../utils/getUser";
@@ -10,6 +11,8 @@ import { isServer } from "../utils/isServer";
 export const getServerSideProps = getUser;
 
 export default function Login({ user }) {
+  const { t } = useTranslation();
+
   const router = useRouter();
   const { redirect } = router.query;
   const redirectPath = redirect ? `/${redirect}` : "/";
@@ -54,7 +57,7 @@ export default function Login({ user }) {
   return (
     <>
       <Head>
-        <title>Login to Crystal Cabins</title>
+        <title>{t("common:login_title")}</title>
       </Head>
       <div>
         {error !== "" && (
@@ -69,26 +72,49 @@ export default function Login({ user }) {
             </div>
           </>
         )}
-        <form onSubmit={loginAction}>
-          <input
-            onChange={e => setUsername(e.target.value)}
+        <form
+          onSubmit={loginAction}
+          className='flex flex-col justify-items-center align-middle px-4'
+        >
+          <InputField
+            placeholder={t("common:username_required")}
+            setValue={setUsername}
             type='text'
-            name='identity'
-            id='input'
-            placeholder='username or email'
-            required
           />
-          <input
-            onChange={e => setPassword(e.target.value)}
+          <InputField
+            placeholder={t("common:password_required")}
+            setValue={setPassword}
             type='password'
-            name='password'
-            id='password'
-            placeholder='password'
-            required
           />
-          <button type='submit'>Login!</button>
+          <button
+            className='bg-white hover:bg-purple-400 w-52 rounded-md pt-5'
+            type='submit'
+          >
+            Login!
+          </button>
         </form>
       </div>
+    </>
+  );
+}
+
+function InputField({ placeholder, setValue, type }) {
+  const id = placeholder.toLowerCase().replace(/ +/g, "_");
+  return (
+    <>
+      <label className='pt-5' htmlFor={id}>
+        {placeholder}
+      </label>
+      <input
+        className='border-b-2 border-gray-600 p-2 w-full'
+        onChange={e => setValue(e.target.value)}
+        type={type}
+        name={id}
+        id={id}
+        placeholder={placeholder}
+        required
+        autoComplete='off'
+      />
     </>
   );
 }

@@ -1,8 +1,8 @@
 import Head from "next/head";
+import useTranslation from "next-translate/useTranslation";
 
 // @ts-ignore
 import styles from "../styles/FAQ.module.scss";
-import getTranslation from "../utils/getTranslation";
 
 function QuestionAnswerPair({ question, answer }) {
   return (
@@ -14,18 +14,18 @@ function QuestionAnswerPair({ question, answer }) {
 }
 
 export default function Faq({ lang }) {
-  const translator = getTranslation(lang);
+  const { t } = useTranslation();
   return (
     <>
       <Head>
-        <title>{translator("faq")}</title>
+        <title>{t("common:faq")}</title>
       </Head>
       <div>
         <h1>FAQ&apos;s</h1>
         <div className={styles.container}>
           <QuestionAnswerPair
-            question={translator("fq1")}
-            answer={translator("fa1")}
+            question={t("common:fq1")}
+            answer={t("common:fa1")}
           />
         </div>
       </div>

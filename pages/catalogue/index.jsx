@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
 import CategoryHead from "../../components/CategoryHead";
 import DisplayGrid from "../../components/DisplayGrid";
@@ -14,7 +15,9 @@ export async function getStaticProps() {
   };
 }
 
-export default function Catalogue({ items, lang }) {
+export default function Catalogue({ items }) {
+  const { t } = useTranslation();
+
   const router = useRouter();
 
   const [products, setProducts] = useState(items);
@@ -43,17 +46,21 @@ export default function Catalogue({ items, lang }) {
   return (
     <>
       <CategoryHead
-        title='crystal cabins catalogue'
+        title={t("common:crystal_catalogue", {
+          main_title: t("common:main_title"),
+        })}
         image={items[0].images[0]}
       />
       <main>
         <div className='flex flex-col py-10 text-center xl:text-left'>
           <h1 className='text-3xl font-serif text-gray-600 pb-10 border-b-2 border-gray-50'>
-            Crystal Cabins Catalogue
+            {t("common:crystal_catalogue", {
+              main_title: t("common:main_title"),
+            })}
           </h1>
           <div className='pt-10'>
             {products.length > 0 ? (
-              <DisplayGrid items={products} lang={lang} />
+              <DisplayGrid items={products} />
             ) : (
               <div className='text-black'>
                 No matches with your search, return to the{" "}
@@ -62,7 +69,9 @@ export default function Catalogue({ items, lang }) {
                     onClick={fetchAllProducts}
                     className='text-purple-600 hover:text-green-600'
                   >
-                    Crystal Cabins Catalogue
+                    {t("common:crystal_catalogue", {
+                      main_title: t("common:main_title"),
+                    })}
                   </a>
                 </Link>
               </div>

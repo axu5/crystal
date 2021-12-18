@@ -9,12 +9,12 @@ import Heart from "./assets/Heart";
 import HeartFilled from "./assets/HeartFilled";
 import BagOutline from "./assets/BagOutline";
 import BagFilled from "./assets/BagFilled";
-import getTranslation from "../utils/getTranslation";
 import { isServer } from "../utils/isServer";
 import { localStorageKeys } from "../constants";
 import { makeAuthReq } from "../utils/makeAuthReq";
+import useTranslation from "next-translate/useTranslation";
 
-export default function DisplayGrid({ items, lang }) {
+export default function DisplayGrid({ items }) {
   const formattedItems = items.map((item, i) => (
     <DisplayItem
       key={i}
@@ -24,7 +24,6 @@ export default function DisplayGrid({ items, lang }) {
       hearts={item.hearts}
       imageSrc={item.images[0]}
       id={item.id}
-      lang={lang}
     />
   ));
   return (
@@ -37,26 +36,26 @@ export default function DisplayGrid({ items, lang }) {
 const keyStr =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-const triplet = (e1, e2, e3) =>
+const triplet = (
+  /** @type {number} */ e1,
+  /** @type {number} */ e2,
+  /** @type {number} */ e3
+) =>
   keyStr.charAt(e1 >> 2) +
   keyStr.charAt(((e1 & 3) << 4) | (e2 >> 4)) +
   keyStr.charAt(((e2 & 15) << 2) | (e3 >> 6)) +
   keyStr.charAt(e3 & 63);
 
-const rgbDataURL = (r, g, b) =>
+const rgbDataURL = (
+  /** @type {number} */ r,
+  /** @type {number} */ g,
+  /** @type {number} */ b
+) =>
   `data:image/gif;base64,R0lGODlhAQABAPAA${
     triplet(0, r, g) + triplet(b, 255, 255)
   }/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==`;
 
-function DisplayItem({
-  name,
-  slug,
-  imageSrc,
-  views,
-  hearts,
-  lang,
-  id,
-}) {
+function DisplayItem({ name, slug, imageSrc, views, hearts, id }) {
   const router = useRouter();
 
   const cartKey = localStorageKeys.cart;
@@ -146,13 +145,13 @@ function DisplayItem({
 
       setHeart(data.heart);
     } catch (e) {
-      console.log(e);
-      // router.push("/login");
-      alert(`you're not logged in`);
+      // console.log(e);
+      router.push("/login");
+      // alert(`you're not logged in`);
     }
   }, [id, router]);
 
-  const translator = getTranslation(lang);
+  const { t } = useTranslation();
 
   if (isServer()) return <></>;
   return (
@@ -162,7 +161,7 @@ function DisplayItem({
           <Image
             className='rounded-t-lg'
             src={imageSrc}
-            alt='product image'
+            alt={t("common:product_image_alt")}
             width={367}
             height={276}
             layout='responsive'
@@ -203,8 +202,8 @@ function DisplayItem({
           >
             {inCart ? <BagFilled /> : <BagOutline />}
             {inCart
-              ? translator("remove_from_bag")
-              : translator("add_to_bag")}
+              ? t("common:remove_from_bag")
+              : t("common:add_to_bag")}
           </button>
           <Link href={`/catalogue/${slug}`}>
             <a className='bg-purple-600 rounded-full py-2 px-4 text-gray-50 flex flex-row hover:bg-purple-700 align-middle text-sm justify-center my-2'>

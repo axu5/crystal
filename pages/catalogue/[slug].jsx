@@ -51,13 +51,7 @@ export async function getStaticProps(context) {
   });
 
   const { user: _user } = await _res.json();
-  console.log(`_user`, _user);
-  if (_user) {
-    // cart.current = _user.cart;
-    cart = _user.cart;
-    // localStorage.setItem(cartKey, JSON.stringify(cart.current));
-    // setUser(_user);
-  }
+  if (_user) cart = _user.cart;
 
   return {
     props: {
@@ -77,7 +71,6 @@ export default function ProductPage({ product, cart }) {
       : JSON.parse(localStorage.getItem(cartKey));
 
   const router = useRouter();
-  // const [heart, setHeart] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -99,29 +92,7 @@ export default function ProductPage({ product, cart }) {
     navigator.clipboard.writeText(currentUri);
   }, [router.asPath]);
 
-  // const makeHeart = useCallback(async () => {
-  //   const res = await fetch(
-  //     `http://localhost:3000/api/products/heart`,
-  //     {
-  //       headers: {
-  //         Accept: "application/json",
-  //       },
-  //       credentials: "same-origin",
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         product: product.id,
-  //       }),
-  //     }
-  //   );
-  //   const data = await res.json();
-
-  //   console.log(`data`, data);
-
-  //   setHeart(data.heart);
-  // }, [product.id]);
-
   const addToCart = async () => {
-    // if (isServer()) return;
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
     let add = true;
@@ -174,14 +145,6 @@ export default function ProductPage({ product, cart }) {
             </p>
             <div className='flex flex-col'>
               <button onClick={getShare}>Share</button>
-              {/* {user && (
-                <button
-                  onClick={makeHeart}
-                  className={heart ? "bg-green-600" : "bg-red-600"}
-                >
-                  {heart ? "un heart" : "heart"}
-                </button>
-              )} */}
               <button
                 onClick={addToCart}
                 className='rounded border-1 border-purple-600 hover:border-purple-900 hover:text-purple:600'
@@ -199,7 +162,7 @@ export default function ProductPage({ product, cart }) {
               height={500}
               layout='responsive'
               className='rounded-lg'
-              // style={{
+              // style= {{
               //   width: "200px",
               //   height: "200px",
               //   maxHeight: "200px",

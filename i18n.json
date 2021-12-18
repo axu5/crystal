@@ -1,0 +1,8 @@
+{
+  "locales": ["en-US", "fi", "it", "kr", "pl", "tr"],
+  "defaultLocale": "en-US",
+  "pages": {
+    "*": ["common"],
+    "/catalogue": ["catalogue"]
+  }
+}

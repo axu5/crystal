@@ -1,10 +1,13 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
+import useTranslation from "next-translate/useTranslation";
 
 import { makeAuthReq } from "../utils/makeAuthReq";
 import { localStorageKeys } from "../constants";
 
 export default function Login() {
+  const { t } = useTranslation();
+
   const router = useRouter();
 
   const logout = type => {
@@ -21,7 +24,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Logout</title>
+        <title>{t("common:logout")}</title>
       </Head>
 
       <div>

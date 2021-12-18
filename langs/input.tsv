@@ -1,0 +1,40 @@
+variable	German (de)	English (en-US)	Finnish (fi)	Italian (it)	Korean (ko)	Polish (pl)	Turkish (tr)
+common:main_title	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins
+common:mission_statement		Shop environmentally and fashionable, fast	Shoppaile ymparistöllisesti ja muodikkaasti, nopeasti				
+common:login		Login	Kirjaudu sisään				
+common:signup		Sign up	Tee uusi tili				
+common:logout		Logout	Kirjaudu ulos				
+common:about		about	meistä				
+common:instagram		instagram	instagram				
+common:add_to_bag		add to bag	lisää kassiisi				
+common:remove_from_bag		remove from bag	poista kassistasi				
+common:privacy_policy		privacy policy	Tietosuojakäytöntä				
+common:terms_of_service		terms of service	käyttöehdot				
+common:view_all		view all	näytä kaikki				
+common:home		home	kotisivu				
+common:shop		shop	kauppa				
+common:bag		bag	kassisi				
+common:copyright		Copyright Reserved by {{main_title}}	{{main_title}}in tekijänoikeudet pidätetään				
+common:necklaces		necklaces	kaulakorut				
+common:rings		rings	sormukset				
+common:views		views	näkökerrat				
+common:hearts		hearts	tykkäävät				
+common:share		share	jaa				
+common:heart		heart	tykkään				
+common:unheart		remove heart	en tykkää				
+common:welcome		welcome {{username}}	tervetuloa {{username}}				
+common:faq		faq	useimmat kysymykset				
+common:shop_now		shop now	osta nyt				
+common:shipping_statement		{{main_title}} provides fast shipping for all	{{main_title}} antaa nopeita ostamis aikoja kaikille				
+common:logo_alt		{{main_title}} logo	{{main_title}}in logo				
+common:catalogue		catalogue	katalogia				
+common:fq1		How long does an order take?					
+common:fa1		Usually an order takes ---- days. If there is an issue please contact us on any of our social media'					
+common:fq2							
+common:fa2							
+common:fq3							
+common:fa3							
+common:discover		discover our catalogue					
+common:username_required		username or email	Käyttäjätunnus tai sähköpostiosoite				
+common:password_required		password	salasana				
+common:login_title		Login to {{main_title}}					
