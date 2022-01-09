@@ -21,6 +21,7 @@ export default function App({ Component, pageProps }) {
         <link rel='icon' href='/favicon.png' />
       </Head>
       <main>
+        <HiddenLinkComponent />
         <TopComponent />
         <div className='container mx-auto p-5'>
           <div className='sticky top-0 bg-white py-5 z-50'>
@@ -34,10 +35,22 @@ export default function App({ Component, pageProps }) {
   );
 }
 
+function HiddenLinkComponent() {
+  const { t } = useTranslation();
+
+  return (
+    <Link href='#main_content'>
+      <a className='hiddenLink'>{t("common:skip_to_main")} &rarr;</a>
+    </Link>
+  );
+}
+
 function TopComponent() {
   const { t } = useTranslation();
 
   const [user, setUser] = useState(null);
+  const [search, setSearch] = useState("");
+
   const router = useRouter();
 
   useEffect(() => {
@@ -54,14 +67,21 @@ function TopComponent() {
         method='GET'
         className='flex flex-row'
         autoComplete='off'
+        onSubmit={e => {
+          e.preventDefault();
+
+          router.push(
+            `/catalogue?search=${encodeURI(
+              search.replace(/ +/g, "+")
+            )}`,
+            null,
+            { shallow: true }
+          );
+        }}
       >
         <input
           onChange={e => {
-            router.push(
-              `/catalogue?search=${encodeURI(
-                e.target.value.replace(/ +/g, "+")
-              )}`
-            );
+            setSearch(e.target.value);
           }}
           className='bg-purple-300 placeholder-gray-600 text-black border border-transparent focus:outline-none focus:ring-none focus:border-b-2 focus:border-purple-600 text-right px-3'
           type='text'
@@ -76,7 +96,36 @@ function TopComponent() {
         {user ? (
           <>
             <div>
-              {t("common:welcome", { username: user.username })}
+              <span
+                onClick={() => {
+                  console.log("clicked");
+                }}
+                className='hover:text-purple-600 lowercase cursor-pointer p-5'
+              >
+                {t("common:welcome", { username: user.username })}
+              </span>
+            </div>
+
+            <div
+              className='
+              absolute
+              px-3 flex flex-col justify-center bg-white rounded shadow-lg right-20 top-12'
+            >
+              <ul className=''>
+                {/* TODO: add translations */}
+                <li className='text-gray-700 hover:text-purple-600 pointer'>
+                  my account
+                </li>
+                <li className='text-gray-700 hover:text-purple-600 pointer'>
+                  wishlist
+                </li>
+                <li className='text-gray-700 hover:text-purple-600 pointer'>
+                  my orders
+                </li>
+                <li className='text-gray-700 hover:text-purple-600 pointer'>
+                  cart
+                </li>
+              </ul>
             </div>
             <div>
               <Link href='/logout'>
@@ -91,14 +140,14 @@ function TopComponent() {
             <div>
               <Link href='/login'>
                 <a className='hover:text-purple-600 lowercase cursor-pointer p-5'>
-                  {t("common:login")}
+                  {t("common:login")} ▻
                 </a>
               </Link>
             </div>
             <div>
               <Link href='/signup'>
                 <a className='hover:text-purple-600 lowercase cursor-pointer p-5'>
-                  {t("common:signup")}
+                  {t("common:signup")} ▻
                 </a>
               </Link>
             </div>
@@ -113,13 +162,29 @@ function Navbar() {
   const { t } = useTranslation();
   const cartKey = localStorageKeys.cart;
 
+  const [bagNumber, setBagNumber] = useState(
+    !isServer() && localStorage.getItem(cartKey)
+      ? JSON.parse(localStorage.getItem(cartKey)).length
+      : 0
+  );
+
+  const ls = isServer() ? undefined : localStorage;
+
+  useEffect(() => {
+    setBagNumber(
+      !isServer() && localStorage.getItem(cartKey)
+        ? JSON.parse(localStorage.getItem(cartKey)).length
+        : 0
+    );
+  }, [cartKey, ls]);
+
   return (
     <div>
       <div className='md:flex md:flex-row md:justify-between text-center'>
         <Link href='/'>
           <a className='flex flex-row justify-center items-center'>
             {/* <div className='bg-gradient-to-r from-purple-400 to-red-400 w-10 h-10 rounded-lg'></div> */}
-            <div className='logo-animation'>
+            <div className=''>
               <Image
                 src='/favicon.png'
                 alt={t("common:logo_alt", {
@@ -129,40 +194,39 @@ function Navbar() {
                 height={40}
               />
             </div>
-            <h1 className='font-serif text-3xl text-gray-600 ml-4 hover:text-purple-600'>
-              {t("common:main_title")}
+            <h1 className='flex flex-col text-gray-600 tracking-tight hover:text-purple-600 font-serif'>
+              <span className='text-3xl ml-4'>
+                {t("common:main_title")},
+              </span>
+              <span className='text-sm text-purple-600'>
+                {t("common:main_title_extension")}
+              </span>
             </h1>
           </a>
         </Link>
-        <div className='mt-2'>
+        <div className='flex flex-col sm:flex-row mt-2 justify-center md:justify-end'>
           <Link href='/'>
-            <a className='text-gray-600 hover:text-purple-600 p-4'>
+            <a className='lowercase text-gray-600 hover:text-purple-600 p-4'>
               {t("common:home")}
             </a>
           </Link>
           <Link href='/catalogue'>
-            <a className='text-gray-600 hover:text-purple-600 p-4'>
+            <a className='lowercase text-gray-600 hover:text-purple-600 p-4'>
               {t("common:catalogue")}
             </a>
           </Link>
-          <Link href='/about'>
-            <a className='text-gray-600 hover:text-purple-600 p-4'>
-              {t("common:about")}
-            </a>
-          </Link>
-          <Link href='/checkout'>
-            <a className='bg-purple-600 text-gray-50 hover:bg-purple-700 py-3 px-5 rounded-full '>
+          <Link href='/bag'>
+            <a
+              className='flex flex-row bg-purple-600 text-gray-50 hover:bg-purple-700 py-3 px-5 rounded-full h-min-full'
+              title={t("common:move_to_bag")}
+            >
               {!isServer() && localStorage.getItem(cartKey) ? (
                 <BagFilled />
               ) : (
                 <BagOutline />
               )}
               {/* BAG ITEM COUNT */}
-              {t("common:bag")} (
-              {!isServer() && localStorage.getItem(cartKey)
-                ? JSON.parse(localStorage.getItem(cartKey)).length
-                : 0}
-              )
+              {t("common:bag")} ({bagNumber})
             </a>
           </Link>
         </div>
@@ -175,9 +239,29 @@ function Footer() {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const langDict = {
+    "en-US": "English",
+    fi: "Suomi",
+    tr: "Türkçe",
+    it: "Italiano",
+    pl: "Polski",
+    kr: "한국어",
+  };
+
   return (
-    <footer className='border-t-2 border-gray-300 py-10'>
-      <div className='flex flex-col text-center xl:flex-row md:justify-between container mx-auto items-center text-sm md:px-10'>
+    <footer className='flex flex-col border-t-2 border-gray-300 py-10'>
+      <div
+        className='
+        flex
+        flex-col xl:flex-row
+        text-center
+        justify-between
+        container
+        mx-auto
+        items-center
+        text-sm
+        md:px-10'
+      >
         <div className='mb-4 text-center'>
           <Link href='/about'>
             <a className='mx-2 hover:text-purple-600 hover:underline'>
@@ -201,18 +285,51 @@ function Footer() {
           </Link>
         </div>
 
-        <ul>
-          {router.locales.map(locale => {
-            return (
-              <li key={locale}>
-                <Link href={router.asPath} locale={locale}>
-                  <a>{locale}</a>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <div>
+          <select
+            className='
+              block
+              appearance-none
+              bg-white
+              border
+              border-gray-400
+              hover:border-gray-500
+              px-4 py-2 pr-8
+              rounded
+              shadow
+              leading-tight
+              focus:outline-none
+              focus:shadow-outline
+              text-center
+              sm:text-left
+              w-96 xl:w-36'
+            onChange={e => {
+              const lang = e.target.value;
+              // if language is the same as the current locale, don't do anything
+              if (router.locale === lang) return;
 
+              router.push(router.asPath, router.asPath, {
+                locale: lang,
+              });
+            }}
+            placeholder={t("common:select_language")}
+            title={t("common:select_language")}
+          >
+            {router.locales.map(locale => {
+              return (
+                <option value={locale} key={locale}>
+                  {/* <Link href={router.asPath} locale={locale}>
+                  <a>{locale}</a>
+                </Link> */}
+                  {langDict[locale]}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      </div>
+
+      <div className='text-center font-serif mt-4'>
         <p className='text-gray-600'>
           &copy;{" "}
           {t("common:copyright", {

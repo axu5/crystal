@@ -1,3 +1,14 @@
 {
-  "main_title": "Crystal Cabins"
+  "add_to_bag": "장바구니 담기 ",
+  "discount": "할인",
+  "heart": "좋아요",
+  "instagram": "인스타그램 ",
+  "login": "로그인",
+  "logout": "로그아웃",
+  "main_title": "Crystal Cabins",
+  "necklaces": "목걸이",
+  "password_required": "비밀번호",
+  "remove_from_bag": "삭제",
+  "rings": "반지",
+  "signup": "가입"
 }

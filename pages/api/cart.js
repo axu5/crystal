@@ -24,7 +24,12 @@ async function postCart(req, res, { uuid }) {
 
   const { users } = await getDb();
 
-  await users.updateOne({ uuid: uuid }, { $set: { cart } });
+  try {
+    await users.updateOne({ uuid: uuid }, { $set: { cart } });
 
-  res.json({ success: true });
+    res.json({ success: true });
+  } catch (e) {
+    // TODO: don't leak error to user
+    res.json({ success: false, error: e });
+  }
 }

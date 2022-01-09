@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { properCasing } from "../utils/properCasing";
 const meta = {
   title: "Crystal Cabins",
   keywords:
@@ -12,7 +13,7 @@ export default function CategoryHead({ image, title }) {
   title = title ?? meta.title;
   return (
     <Head>
-      <title>{title}</title>
+      <title>{properCasing(title)}</title>
       {/* Most important meta tags */}
       <meta
         httpEquiv='Content-Type'

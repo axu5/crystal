@@ -2,17 +2,22 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
+// import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import { makeAuthReq } from "../utils/makeAuthReq";
 import getUser from "../utils/getUser";
 import { isServer } from "../utils/isServer";
+import InputField from "../components/InputField";
+import { localStorageKeys } from "../constants";
+import Button from "../components/Button";
+import Error from "../components/Error";
 
 export const getServerSideProps = getUser;
 
 export default function SignUp({ user }) {
   const router = useRouter();
 
+  const cartKey = localStorageKeys.cart;
   const { un, em, fn, ln, redirect } = router.query;
   const redirectPath = redirect ? `/${redirect}` : "/";
   if (!isServer() && user !== null) router.push(redirectPath);
@@ -25,8 +30,8 @@ export default function SignUp({ user }) {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  const [token, setToken] = useState("");
-  const captcha = useRef();
+  // const [token, setToken] = useState("");
+  // const captcha = useRef();
 
   useEffect(() => {
     // @ts-ignore
@@ -42,9 +47,9 @@ export default function SignUp({ user }) {
   const signupAction = async e => {
     e.preventDefault();
 
-    if (!token || token === "") {
-      setError("you must verify the captcha");
-    }
+    // if (!token || token === "") {
+    //   setError("you must verify the captcha");
+    // }
 
     if (password !== passwordCheck) {
       setError("passwords are not equal");
@@ -57,7 +62,7 @@ export default function SignUp({ user }) {
       username,
       email,
       password,
-      token,
+      // token,
     };
 
     const data = await makeAuthReq("signup", body);
@@ -67,17 +72,25 @@ export default function SignUp({ user }) {
     if (success) {
       // redirect user
       // router.push(redirectPath);
-      setSuccess(
-        `success, check your email (<Link href="https://mail.google.com/mail/u/?authuser=${email}"><a>gmail</a></Link>)`
-      );
+      // setSuccess(
+      //   `success, check your email ()`
+      // );
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      const res = await fetch(`http://localhost:3000/api/cart`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ cart }),
+      });
     } else {
       setError(
         typeof error === "object" ? JSON.stringify(error) : error
       );
     }
     // @ts-ignore
-    captcha.current.resetCaptcha();
-    setToken("");
+    // captcha.current.resetCaptcha();
+    // setToken("");
   };
 
   return (
@@ -86,7 +99,16 @@ export default function SignUp({ user }) {
         <title>Sign up to Crystal Cabins!</title>
       </Head>
       <div>
-        {success && <div className='bg-green-300'>{success}</div>}
+        {success && (
+          <div className='bg-green-300'>
+            {success}{" "}
+            <Link
+              href={`https://mail.google.com/mail/u/?authuser=${email}`}
+            >
+              <a>gmail</a>
+            </Link>
+          </div>
+        )}
         {error !== "" && (
           <>
             <div>{error}</div>
@@ -100,70 +122,87 @@ export default function SignUp({ user }) {
           </>
         )}
         <form onSubmit={signupAction}>
-          <input
-            onChange={e => setUsername(e.target.value)}
-            type='text'
-            name='username'
-            id='username'
+          {/* InputField({ placeholder, setValue, type }) */}
+          <InputField
             placeholder='username'
-            value={username}
-            required
+            setValue={setUsername}
+            type='text'
           />
-          <input
-            onChange={e => setEmail(e.target.value)}
-            type='email'
-            name='email'
-            id='email'
+          <InputField
             placeholder='email'
-            value={email}
-            required
+            setValue={setEmail}
+            type='email'
           />
-          <input
-            onChange={e => setFirstName(e.target.value)}
-            type='text'
-            name='first name'
-            id='firstname'
+          <InputField
             placeholder='first name'
-            value={firstName}
-            required
-          />
-          <input
-            onChange={e => setLastName(e.target.value)}
+            setValue={setFirstName}
             type='text'
-            name='last name'
-            id='lastname'
+          />
+          <InputField
             placeholder='last name'
-            value={lastName}
-            required
+            setValue={setLastName}
+            type='text'
           />
-          <input
-            onChange={e => setPassword(e.target.value)}
-            type='password'
-            name='password'
-            id='password'
+          <InputField
             placeholder='password'
-            required
-          />
-          <input
-            onChange={e => setPasswordCheck(e.target.value)}
+            setValue={setPassword}
             type='password'
-            name='passwordcheck'
-            id='passwordcheck'
-            placeholder='repeat your password'
-            required
+          />
+          <InputField
+            placeholder='password check'
+            setValue={setPasswordCheck}
+            type='password'
           />
 
           {/* @ts-ignore */}
-          <HCaptcha
+          {/* <HCaptcha
             ref={captcha}
             sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
             onVerify={(token, _ekey) => setToken(token)}
             onExpire={e => setToken("")}
-          />
+          /> */}
 
           <button type='submit'>Sign up!</button>
         </form>
       </div>
+      <form id='main_content' onSubmit={signupAction}>
+        <div className='flex justify-center align-middle px-4'>
+          <div className='flex flex-col md:w-96'>
+            <Error error={error} />
+            <InputField
+              placeholder='username'
+              setValue={setUsername}
+              type='text'
+            />
+            <InputField
+              placeholder='email'
+              setValue={setEmail}
+              type='email'
+            />
+            <InputField
+              placeholder='first name'
+              setValue={setFirstName}
+              type='text'
+            />
+            <InputField
+              placeholder='last name'
+              setValue={setLastName}
+              type='text'
+            />
+            <InputField
+              placeholder='password'
+              setValue={setPassword}
+              type='password'
+            />
+            <InputField
+              placeholder='password check'
+              setValue={setPasswordCheck}
+              type='password'
+            />
+            <Button actionTitle='sign up' callback={signupAction} />
+          </div>
+        </div>
+      </form>
     </>
   );
 }

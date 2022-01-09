@@ -11,12 +11,13 @@ import CheckOutline from "../components/assets/CheckOutline";
 import XOutline from "../components/assets/XOutline";
 import RefreshOutline from "../components/assets/RefreshOutline";
 
+// redirect if not admin
 export const getServerSideProps = async context => {
   const {
     props: { user },
   } = await getUser(context);
 
-  const admin = user ? user.accountType.permissions > 1 : false;
+  const admin = user ? user.accountType.permissions > 8 : false;
 
   if (!user) {
     return {
@@ -55,6 +56,7 @@ export default function Admin({ user }) {
           {},
           "GET"
         );
+
         setProducts(_prods);
       } catch (e) {
         setError(JSON.stringify(e));
@@ -86,7 +88,7 @@ export default function Admin({ user }) {
         sim => products.some(prod => prod.slug === sim) || sim === ""
       );
 
-      if (!isProduct) {
+      if (!isProduct && similar.length > 0) {
         alert("some slugs may be incorrect");
       } else {
         verified = true;
@@ -155,6 +157,16 @@ export default function Admin({ user }) {
       </Head>
       <main>
         <Error error={error} />
+        <div className='flex flex-row bg-purple-100 justify-between'>
+          <QuickLink
+            name='products'
+            link='https://docs.google.com/spreadsheets/d/1Vv1IR1SZTTeNYz19viEUCTCtdpUxPCifgbRa1SWDJI0/edit'
+          />
+          <QuickLink
+            name='translations'
+            link='https://docs.google.com/spreadsheets/d/1Vv1IR1SZTTeNYz19viEUCTCtdpUxPCifgbRa1SWDJI0/edit#gid=1741574937'
+          />
+        </div>
         <div className='py-10 flex flex-col justify-center'>
           <h1 className='flex flex-row text-center justify-center'>
             You&apos;re an admin {user.username} ({user.name.first}{" "}
@@ -193,6 +205,16 @@ function ProductList({ products, err }) {
   );
 }
 
+function QuickLink({ link, name }) {
+  return (
+    <Link href={link}>
+      <a target='_blank' className='mx-auto'>
+        {name} &rarr;
+      </a>
+    </Link>
+  );
+}
+
 function SingleProduct({ product, err }) {
   const router = useRouter();
 
@@ -201,6 +223,7 @@ function SingleProduct({ product, err }) {
   const [description, setDescription] = useState(product.description);
   const [summary, setSummary] = useState(product.summary);
   const [similar, setSimilar] = useState(product.similar);
+
   const [images, setImages] = useState(product.images);
   const [tags, setTags] = useState(product.tags);
   const [price, setPrice] = useState(
@@ -418,12 +441,12 @@ function MultiVars({ title, getter, setter, valueCb }) {
     <div>
       <span className='font-bold'>{title}</span>{" "}
       <div className='flex flex-col'>
-        {getter.map((sim, i) => {
+        {getter.map((item, i) => {
           return (
             <div key={i}>
               &rarr;{" "}
               <input
-                value={sim}
+                value={item}
                 onChange={e => similarChange(e, i)}
               />
             </div>

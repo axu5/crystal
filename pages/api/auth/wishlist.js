@@ -25,11 +25,12 @@ export default async function wishlist(req, res) {
 
   return res.json({
     success: true,
-    data: user.wishlist.map(async productId => {
-      const product = await products.findOne({ id: productId });
-      delete product["_id"];
-      console.log(`product`, product);
-      return product;
-    }),
+    data: await Promise.all(
+      user.wishlist.map(async productId => {
+        const product = await products.findOne({ id: productId });
+        delete product["_id"];
+        return product;
+      })
+    ),
   });
 }

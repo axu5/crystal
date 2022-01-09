@@ -15,7 +15,7 @@ export async function getServerSideProps() {
   };
 }
 
-export default function Home({ items, lang }) {
+export default function Home({ items }) {
   const { t } = useTranslation();
 
   return (
@@ -24,6 +24,7 @@ export default function Home({ items, lang }) {
         <title>{t("common:main_title")}</title>
         <meta
           name='description'
+          // TODO: add translations
           content='Get high quality crystals**'
         />
       </Head>
@@ -61,8 +62,18 @@ export default function Home({ items, lang }) {
         <Display
           title={t("common:necklaces")}
           slug='necklaces'
-          items={items}
-          lang={lang}
+          items={items.filter(item =>
+            item.tags.some(tag => tag.startsWith("neck"))
+          )}
+        />
+      )}
+      {items && (
+        <Display
+          title={t("common:rings")}
+          slug='rings'
+          items={items.filter(item =>
+            item.tags.some(tag => tag.startsWith("ring"))
+          )}
         />
       )}
       {/* necklaces */}

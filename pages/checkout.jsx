@@ -1,65 +1,30 @@
-import Head from "next/head";
-import { Elements, PaymentElement } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-
-// import { getUser } from "../utils/getUser";
+import useTranslation from "next-translate/useTranslation";
+import { useRouter } from "next/router";
 import { isServer } from "../utils/isServer";
-import { localStorageKeys } from "../constants";
-import getUser from "../utils/getUser";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PRIVATE_KEY
-);
+export default function Checkout() {
+  const router = useRouter();
+  const { status } = router.query;
 
-export const getServerSideProps = getUser;
-
-export default function Cart({ user }) {
-  const cartKey = localStorageKeys.cart;
-
-  const cart =
-    (user && user.cart) ||
-    (!isServer()
-      ? JSON.parse(localStorage.getItem(cartKey)) || []
-      : []);
-
-  console.log(`cart`, cart);
+  console.log(router.query);
 
   return (
     <>
-      <Head>
-        <title>
-          {user
-            ? `${user.username}'s crystal cart`
-            : "your crystal cart"}
-        </title>
-      </Head>
-      <div>
-        <h1>you&apos;re {user ? "" : "not "}logged in</h1>
-        <p>
-          {cart && cart.length
-            ? cart.map(
-                (item, i) => (
-                  <div key={i}>
-                    {i + 1}) {item}
-                  </div>
-                ),
-                ""
-              )
-            : "You have no items in your crystal cart"}
-        </p>
-        <Elements stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
+      <>
+        <title>Checkout</title>
+      </>
+      <div className='flex flex-row w-96 justify-center'>
+        {status && status === "success" && (
+          <div className='bg-green-100 text-green-700 p-2 rounded border mb-2 border-green-700'>
+            Payment Successful
+          </div>
+        )}
+        {status && status === "cancel" && (
+          <div className='bg-red-100 text-red-700 p-2 rounded border mb-2 border-red-700'>
+            Payment Unsuccessful
+          </div>
+        )}
       </div>
     </>
-  );
-}
-
-function CheckoutForm() {
-  return (
-    <form>
-      <PaymentElement />
-      <button>Submit</button>
-    </form>
   );
 }

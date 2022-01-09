@@ -1,7 +1,7 @@
 import middleware from "../utils/middleware";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
-import fetch from "node-fetch";
+// import fetch from "node-fetch";
 
 import getDb from "../database";
 import { createAccessToken, createRefreshToken } from "../tokenUtils";
@@ -12,7 +12,7 @@ import {
   validateUsername,
 } from "./validators";
 import { saltRounds } from "../constants";
-import sendEmail from "../utils/sendEmail";
+// import sendEmail from "../utils/sendEmail";
 
 export default async function signup(req, res) {
   await middleware(req, res);
@@ -21,40 +21,41 @@ export default async function signup(req, res) {
     let { username, password, email, firstName, lastName, token } =
       req.body;
 
-    if (!token) {
-      throw "please complete the captcha";
-    }
+    // if (!token) {
+    //   throw "please complete the captcha";
+    // }
 
-    const details = {
-      response: token,
-      secret: process.env.HCAPTCHA_SECRET,
-      sitekey: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY,
-    };
+    // const details = {
+    //   response: token,
+    //   secret: process.env.HCAPTCHA_SECRET,
+    //   sitekey: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY,
+    // };
 
-    const formBody = [];
-    for (const property in details) {
-      const encodedKey = encodeURIComponent(property);
-      const encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
+    // const formBody = [];
+    // for (const property in details) {
+    //   const encodedKey = encodeURIComponent(property);
+    //   const encodedValue = encodeURIComponent(details[property]);
+    //   formBody.push(encodedKey + "=" + encodedValue);
+    // }
 
-    const response = await fetch("https://hcaptcha.com/siteverify", {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      method: "POST",
-      body: formBody.join("&"),
-    });
+    // const response = await fetch("https://hcaptcha.com/siteverify", {
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //   },
+    //   method: "POST",
+    //   body: formBody.join("&"),
+    // });
 
-    const data = await response.json();
+    // const data = await response.json();
+    // const data = { success: true };
 
     // @ts-ignore
-    const { success, "error-codes": errorCodes } = data;
+    // const { success, "error-codes": errorCodes } = data;
 
-    if (!success) {
-      console.error("captcha failed", errorCodes);
-      throw "captcha failed";
-    }
+    // if (!success) {
+    //   // console.error("captcha failed", errorCodes);
+    //   throw "captcha failed";
+    // }
 
     const { users } = await getDb();
     username = username.trim();
@@ -111,7 +112,7 @@ export default async function signup(req, res) {
       activated: false,
     };
 
-    console.log("email :>> ", email);
+    // console.log("email :>> ", email);
 
     const subject = "verify crystal cabins account";
     const body = `
@@ -124,7 +125,7 @@ export default async function signup(req, res) {
 <a href="${process.env.BASE_URI}/deleteAccount?uuid=${uuid}">Click here if this wasn't you</a>
 `;
 
-    console.log(`email`, email);
+    // console.log(`email`, email);
     // await sendEmail(email, subject, body);
 
     await users.insertOne(userObject);
@@ -137,7 +138,7 @@ export default async function signup(req, res) {
 
     res.status(200).json({ success: true });
   } catch (e) {
-    console.error("e :>>", e);
+    // console.error("e :>>", e);
     res.status(400).json({ success: false, error: e });
   }
 }

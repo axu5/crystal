@@ -3,9 +3,6 @@ import getDb from "../database";
 import auth from "../utils/auth";
 
 export default async function productHandler(req, res) {
-  console.log("got request");
-  console.log("method " + req.method);
-
   // check if logged in
   let user;
   try {
@@ -14,6 +11,7 @@ export default async function productHandler(req, res) {
     return res.json({ success: false, error: "not logged in" });
   }
 
+  // if use doesn't have permissions, return error
   if (user?.accountType?.permissions < 4) {
     return res.json({
       success: false,
@@ -24,6 +22,17 @@ export default async function productHandler(req, res) {
   const { products: _products } = await getDb();
   const products = await _products.find({});
   if (req.method === "GET") {
+    // ?id=PROD-UUID
+    const { id } = req.query;
+    if (id) {
+      const product = await _products.findOne({ id });
+      if (product) {
+        return res.json({ success: true, product });
+      }
+      return res.json({ success: false, error: "product not found" });
+    }
+
+    // get all
     return res.json({
       success: true,
       products: (await products.toArray()).map(p => {
@@ -32,6 +41,7 @@ export default async function productHandler(req, res) {
       }),
     });
   } else if (req.method === "POST") {
+    // create
     try {
       const product = req.body;
       product.views = 0;
@@ -47,7 +57,6 @@ export default async function productHandler(req, res) {
         "summary",
         "tags",
         "price",
-
         "views",
         "hearts",
         "sold",
@@ -72,12 +81,18 @@ export default async function productHandler(req, res) {
           { name: product.name },
         ],
       });
-      console.log(`existingProd`, existingProd);
+
       if (existingProd) throw "Nahh";
 
-      product.similar = product.similar.map(async slug => {
-        return (await _products.findOne({ slug })).id;
-      });
+      // resolve promises
+      product.similar = await Promise.all(
+        product.similar.map(async slug => {
+          const tmp = await _products.findOne({ slug });
+          return tmp.id;
+        })
+      );
+
+      console.log("product.similar", product.similar);
 
       await _products.insertOne(product);
 
@@ -92,6 +107,7 @@ export default async function productHandler(req, res) {
       });
     }
   } else if (req.method === "PUT") {
+    // update
     try {
       const productData = req.body;
       const productId = productData.id;
@@ -115,12 +131,21 @@ export default async function productHandler(req, res) {
         description: productData.description.trim(),
         summary: productData.summary.trim(),
         // convert slugs to ids.
-        similar: productData.similar
-          .filter(slug => slug !== "")
-          .map(async slug => {
-            const productLink = await _products.findOne({ slug });
-            return productLink.id;
-          }),
+        similar: await Promise.all(
+          productData.similar
+            .filter(slug => slug !== "")
+            .map(async _slug => {
+              const productLink = await _products.findOne({
+                $or: [
+                  { name: _slug },
+                  { slug: _slug },
+                  { id: _slug },
+                ],
+              });
+              console.log(`productLink`, productLink);
+              return productLink.id;
+            })
+        ),
         // make sure all images are valid discord cdn urls
         images,
         tags: productData.tags

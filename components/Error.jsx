@@ -1,8 +1,18 @@
 export default function Error({ error }) {
   return (
-    <div className='absolute center'>
+    <div className='flex flex-col center'>
       {error !== "" ? (
-        <div className='flex flex-row justify-center py-5 w-96 absolute rounded-sm border-red-900 bg-red-400 text-center'>
+        <div
+          className='
+          bg-red-500
+          text-white
+          font-bold
+          py-4 px-4
+          my-4
+          rounded
+          focus:outline-none
+          focus:shadow-outline'
+        >
           Error: {error}
         </div>
       ) : (

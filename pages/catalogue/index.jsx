@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
 
 import CategoryHead from "../../components/CategoryHead";
-import DisplayGrid from "../../components/DisplayGrid";
 import getItems from "../../utils/getItems";
+import Display from "../../components/Display";
 
 export async function getStaticProps() {
+  console.log("getStaticProps");
   return {
     props: {
       items: await getItems({}),
@@ -17,7 +17,6 @@ export async function getStaticProps() {
 
 export default function Catalogue({ items }) {
   const { t } = useTranslation();
-
   const router = useRouter();
 
   const [products, setProducts] = useState(items);
@@ -25,10 +24,12 @@ export default function Catalogue({ items }) {
   const fetchAllProducts = useCallback(async () => {
     const res = await fetch(`http://localhost:3000/api/products`);
     const json = await res.json();
+    console.log("fetched all products", json);
 
     setProducts(json);
   }, []);
 
+  // TODO: stop api spam
   useEffect(() => {
     (async () => {
       const { search } = router.query;
@@ -39,9 +40,11 @@ export default function Catalogue({ items }) {
       );
       const json = await res.json();
 
+      console.log(`fetched queried products (${search})`, json);
+
       setProducts(json);
     })();
-  }, [router.query]);
+  }, [router.query, fetchAllProducts]);
 
   return (
     <>
@@ -58,7 +61,7 @@ export default function Catalogue({ items }) {
               main_title: t("common:main_title"),
             })}
           </h1>
-          <div className='pt-10'>
+          {/* <div className='pt-10'>
             {products.length > 0 ? (
               <DisplayGrid items={products} />
             ) : (
@@ -76,7 +79,13 @@ export default function Catalogue({ items }) {
                 </Link>
               </div>
             )}
-          </div>
+          </div> */}
+          <Display
+            title=''
+            slug=''
+            items={products}
+            callback={() => {}}
+          />
         </div>
       </main>
     </>

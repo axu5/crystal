@@ -6,6 +6,6 @@ import authGetUser from "../user";
  *
  * @returns {Promise<void>} resolves a user, if no user is resolved, resolves null
  */
-export default async function h(req, res) {
+export default async function user(req, res) {
   await authGetUser(req, res);
 }

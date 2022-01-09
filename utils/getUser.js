@@ -3,7 +3,9 @@ import auth from "../pages/api/utils/auth";
 import { isServer } from "./isServer";
 
 export default async function getUser({ req, res }) {
+  // if not server, GET OUTTA HERE
   if (!isServer()) return;
+
   const { refreshToken } = req.cookies;
   if (!refreshToken)
     return {
@@ -30,6 +32,8 @@ export default async function getUser({ req, res }) {
     "purchased",
     "phoneNumber",
     "accountAge",
+    "emailToken",
+    "activated",
   ];
 
   privateProperties.forEach(prop => delete user[prop]);

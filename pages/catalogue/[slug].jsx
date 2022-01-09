@@ -1,30 +1,53 @@
-// import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
+/* external */
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import useTranslation from "next-translate/useTranslation";
 
-// @ts-ignore
+/* constants */
 import { localStorageKeys } from "../../constants";
+
+/* utilities */
 import { isServer } from "../../utils/isServer";
+import { properCasing } from "../../utils/properCasing";
+import addToCart from "../../utils/addToCart";
+
+/* components */
 import CategoryHead from "../../components/CategoryHead";
-import Heart from "../../components/assets/Heart";
-import Eye from "../../components/assets/Eye";
-import BagFilled from "../../components/assets/BagFilled";
+
+/* assets */
 import BagOutline from "../../components/assets/BagOutline";
+import BagFilled from "../../components/assets/BagFilled";
+import { rgbDataURL } from "../../utils/blurImage";
 import { makeAuthReq } from "../../utils/makeAuthReq";
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ locales }) {
   const res = await fetch("http://localhost:3000/api/products");
   const data = await res.json();
 
-  const paths = data.map(product => {
-    const { slug } = product;
-    return {
-      params: {
-        slug,
-      },
-    };
-  });
+  const paths = [];
+
+  locales.forEach(
+    (/** @type {string} */ locale, /** @type {number} */ _index) => {
+      paths.push(
+        ...data.map(product => {
+          const { slug } = product;
+          return {
+            params: {
+              slug,
+              locale,
+            },
+          };
+        })
+      );
+    }
+  );
+
+  // console.log(paths);
+  // console.log(
+  //   `${locales.length} (locales) x ${data.length} (products) = ${
+  //     locales.length * data.length
+  //   } pages`
+  // );
 
   return {
     // paths: [{}, {}, { params: { product: '' } }]
@@ -38,7 +61,7 @@ export async function getStaticProps(context) {
 
   const { slug } = context.params;
   const res = await fetch(
-    `http://localhost:3000/api/products/${slug}`
+    `http://localhost:3000/api/products/view/${slug}`
   );
   const item = await res.json();
 
@@ -56,124 +79,151 @@ export async function getStaticProps(context) {
   return {
     props: {
       product: item,
-      cart,
+      cart: cart,
     },
   };
 }
 
 export default function ProductPage({ product, cart }) {
+  const { t } = useTranslation();
+
   const cartKey = localStorageKeys.cart;
-  const cartRef =
-    cart && cart.length
-      ? cart
-      : isServer()
-      ? []
-      : JSON.parse(localStorage.getItem(cartKey));
 
-  const router = useRouter();
+  const cartRef = isServer()
+    ? []
+    : cart
+    ? cart
+    : JSON.parse(localStorage.getItem(cartKey));
+
+  // set states
+  const [qty, setQty] = useState(1);
+  const [heart, setHeart] = useState(false);
+  const [inCart, setInCart] = useState(() => {
+    try {
+      return (
+        cartRef &&
+        !!cartRef.length &&
+        cartRef.some(p => p === product.id)
+      );
+    } catch {
+      return false;
+    }
+  });
   const [user, setUser] = useState(null);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const loader = async () => {
-      const { user } = await makeAuthReq("user");
-      setUser(JSON.stringify(user));
+    const load = async () => {
+      setLoading(false);
+
+      const user = await makeAuthReq("user");
+      console.log("user", user);
+      setUser(user);
     };
-    loader();
-  }, []);
 
-  const [inCart, setInCart] = useState(
-    cartRef && cartRef.some(p => p === product.id)
-  );
-
-  const getShare = useCallback(() => {
-    const currentUri =
-      process.env.NEXT_PUBLIC_BASE_URI + router.asPath;
-
-    navigator.clipboard.writeText(currentUri);
-  }, [router.asPath]);
-
-  const addToCart = async () => {
-    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-
-    let add = true;
-    for (let i = 0; i < cart.length; ++i) {
-      const prod = cart[i];
-      if (prod === product.id) {
-        cart.splice(i, 1);
-        add = false;
-        break;
-      }
-    }
-    if (add) cart.push(product.id);
-
-    localStorage.setItem(cartKey, JSON.stringify(cart));
-
-    if (user) {
-      const res = await fetch(`http://localhost:3000/api/cart`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ cart: cartRef }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) setInCart(!inCart);
-    } else {
-      setInCart(cart.some(item => item === product.id));
-    }
-  };
+    if (loading) load();
+  }, [loading]);
 
   return (
     <>
-      {/* <CategoryHead title={product.name} image={product.images[0]} /> */}
       <CategoryHead title={product.name} image={product.images[0]} />
-      <main className='container flex flex-col'>
-        <div className='font-mono'>CART: {JSON.stringify(cart)}</div>
-        <div className='flex flex-row p-5'>
-          <div className='w-4/5'>
-            <h1 className='font-serif text-3xl text-gray-600'>
-              {product.name}
-            </h1>
-            <p>{product.description}</p>
-            <p className='flex flex-row justify-between'>
-              {product.views + 1} <Eye />
-            </p>
-            <p className='flex flex-row justify-between'>
-              {product.hearts} <Heart />
-            </p>
-            <div className='flex flex-col'>
-              <button onClick={getShare}>Share</button>
-              <button
-                onClick={addToCart}
-                className='rounded border-1 border-purple-600 hover:border-purple-900 hover:text-purple:600'
-              >
-                {inCart ? "remove from cart" : "add to cart"}{" "}
-                {inCart ? <BagFilled /> : <BagOutline />}
+      <div className='container flex flex-row py-5'>
+        {/* IMAGE */}
+        <div className='container relative w-3/5 p-r-10'>
+          <div className='relative h-full w-full'>
+            <Image
+              id='featured'
+              className='rounded-t-lg'
+              src={product.images[0]}
+              alt={t("common:product_image_alt")}
+              // width={367}
+              // height={276}
+              layout='fill'
+              priority
+              placeholder='blur'
+              blurDataURL={rgbDataURL(237, 181, 6)}
+            />
+          </div>
+        </div>
+        {/* TEXT */}
+        <div
+          id='main_content'
+          className='container flex flex-col w-3/5 justify-center items-center'
+        >
+          <div className='capitalize font-bold text-3xl'>
+            {product.name}
+          </div>
+          <div className='text-2xl'>{product.price / 100}&euro;</div>
+          <div className='text-lg py-3'>
+            {properCasing(product.summary)}
+          </div>
+          <div className='text-lg py-3'>
+            {properCasing(product.description)}
+          </div>
+          <div className='border-t border-b py-3 my-3'>
+            <SubTitle title='Size' />
+            <div className='flex flex-row justify-between items-center py-5'>
+              <button className='text-md bg-purple-200 hover:bg-purple-400 px-4 py-1 mx-5'>
+                01
+              </button>
+              <button className='text-md bg-purple-200 hover:bg-purple-400 px-4 py-1 mx-5'>
+                02
+              </button>
+              <button className='text-md bg-purple-200 hover:bg-purple-400 px-4 py-1 mx-5'>
+                03
+              </button>
+              <button className='text-md bg-purple-200 hover:bg-purple-400 px-4 py-1 mx-5'>
+                04
+              </button>
+              <button className='text-md bg-purple-200 hover:bg-purple-400 px-4 py-1 mx-5'>
+                05
               </button>
             </div>
-          </div>
-          <div className='w-1/5'>
-            <Image
-              src={product.images[0]}
-              alt={`${product.title} product image`}
-              width={500}
-              height={500}
-              layout='responsive'
-              className='rounded-lg'
-              // style= {{
-              //   width: "200px",
-              //   height: "200px",
-              //   maxHeight: "200px",
-              //   maxWidth: "200px",
-              // }}
+            <br />
+            <SubTitle title={t("common:quantity")} />
+            <input
+              name='quantity'
+              type='number'
+              placeholder='quantity'
+              value={qty}
+              onChange={e =>
+                setQty(Math.max(Number(e.target.value), 1))
+              }
             />
-            <p className='text-xl'>{product.price / 100}&euro;</p>
           </div>
-          {/* <button>buy now</button> */}
+
+          <div className='container flex flex-col justify-center items-center py-5'>
+            <button
+              onClick={async () =>
+                setInCart(await addToCart(product.id, user)())
+              }
+              className='flex flex-row bg-purple-400 hover:bg-purple-500 px-3 py-1 my-1 justify-between'
+            >
+              {inCart ? (
+                <>
+                  <BagFilled />
+                  {t("common:remove_from_bag")}
+                </>
+              ) : (
+                <>
+                  <BagOutline />
+                  {t("common:add_to_bag")}
+                </>
+              )}
+            </button>
+            {/* TODO: Add buy now button to product page. */}
+            {/* <button className='bg-purple-400 hover:bg-purple-500 px-3 py-1 my-1'>
+              {t("common:buy_now")}
+            </button> */}
+            <button className='bg-purple-400 hover:bg-purple-500 px-3 py-1 my-1'>
+              {heart ? t("common:unwishlist") : t("common:wishlist")}
+            </button>
+          </div>
         </div>
-      </main>
+      </div>
     </>
   );
+}
+
+function SubTitle({ title }) {
+  return <div className='text-xl'>{properCasing(title)}</div>;
 }

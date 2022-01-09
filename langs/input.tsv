@@ -1,40 +1,65 @@
-variable	German (de)	English (en-US)	Finnish (fi)	Italian (it)	Korean (ko)	Polish (pl)	Turkish (tr)
-common:main_title	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins
-common:mission_statement		Shop environmentally and fashionable, fast	Shoppaile ymparistöllisesti ja muodikkaasti, nopeasti				
-common:login		Login	Kirjaudu sisään				
-common:signup		Sign up	Tee uusi tili				
-common:logout		Logout	Kirjaudu ulos				
-common:about		about	meistä				
-common:instagram		instagram	instagram				
-common:add_to_bag		add to bag	lisää kassiisi				
-common:remove_from_bag		remove from bag	poista kassistasi				
-common:privacy_policy		privacy policy	Tietosuojakäytöntä				
-common:terms_of_service		terms of service	käyttöehdot				
-common:view_all		view all	näytä kaikki				
-common:home		home	kotisivu				
-common:shop		shop	kauppa				
-common:bag		bag	kassisi				
-common:copyright		Copyright Reserved by {{main_title}}	{{main_title}}in tekijänoikeudet pidätetään				
-common:necklaces		necklaces	kaulakorut				
-common:rings		rings	sormukset				
-common:views		views	näkökerrat				
-common:hearts		hearts	tykkäävät				
-common:share		share	jaa				
-common:heart		heart	tykkään				
-common:unheart		remove heart	en tykkää				
-common:welcome		welcome {{username}}	tervetuloa {{username}}				
-common:faq		faq	useimmat kysymykset				
-common:shop_now		shop now	osta nyt				
-common:shipping_statement		{{main_title}} provides fast shipping for all	{{main_title}} antaa nopeita ostamis aikoja kaikille				
-common:logo_alt		{{main_title}} logo	{{main_title}}in logo				
-common:catalogue		catalogue	katalogia				
-common:fq1		How long does an order take?					
-common:fa1		Usually an order takes ---- days. If there is an issue please contact us on any of our social media'					
-common:fq2							
+variable	Turkish (tr)	German (de)	English (en-US)	Finnish (fi)	Italian (it)	Korean (ko)	Polish (pl)
+common:about	hakkımızda		about	meistä			
+common:add_to_bag	sepete ekle		add to bag	lisää kassiisi	aggiungi al carrello	장바구니 담기 	
+common:all_products			All Products				
+common:bag	sepet		bag	kassisi			
+common:bundles			bundles				
+common:buy_now			buy now	osta nyt			
+common:buy_now			buy	osta			
+common:cart_not_logged_in			your cart				
+common:cart_username			{{username}}'s cart				
+common:catalogue	katalog		catalogue	katalogia			
+common:checkout			checkout	osta			
+common:copyright			Copyright Reserved by {{main_title}}	{{main_title}}in tekijänoikeudet pidätetään			
+common:couples	çiftler		Couples				
+common:crystal_catalogue			{{main_title}} catalogue	{{main_title}}in katalogia			
+common:discount			Discount	alennus		할인	
+common:discover	kataloğu keşfedin		discover our catalogue				
+common:empty			your cart is empty				
+common:empty_return			return to shopping				
+common:fa1	genellikle bir sipariş *** gün sürer. Bir sorun çıkarsa lütfen bize herhangi bir sosyal medyalarımızdan ulaşın.		Usually an order takes ---- days. If there is an issue please contact us on any of our social media'				
 common:fa2							
-common:fq3							
 common:fa3							
-common:discover		discover our catalogue					
-common:username_required		username or email	Käyttäjätunnus tai sähköpostiosoite				
-common:password_required		password	salasana				
-common:login_title		Login to {{main_title}}					
+common:faq	sıkça sorulan sorular		faq	useimmat kysymykset			
+common:fq1	bir sipariş ne kadar sürerdir		How long does an order take?				
+common:fq2							
+common:fq3							
+common:heart	kalp		heart	tykkään		좋아요	
+common:hearts	kalpler		hearts	tykkäävät			
+common:home			home	kotisivu			
+common:instagram	instagram		instagram	instagram		인스타그램 	
+common:loading			Loading...				
+common:login	Giriş yap	Anmelden	Login	Kirjaudu sisään		로그인	
+common:login_error	bir hesap oluşturmak ister misiniz		Want to create an account?	Haluaisitko tehdä uuden tilin?			
+common:login_title	giriş yap		Login	Kirjaudu sisään			
+common:logo_alt			{{main_title}} logo	{{main_title}}in logo			
+common:logout	Oturumu kapat		Logout	Kirjaudu ulos		로그아웃	
+common:logout_all			Log out all your accounts				
+common:logout_check			Are you sure you want to logout?	Oletko varma että haluat kirjautua ulos?			
+common:main_title	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins
+common:main_title_extension			a JAYE company	JAYE firma			
+common:mission_statement			Shop environmentally and fashionable, fast	Shoppaile trendikkäästi, ymparistö ystävällisesti, ja nopeasti			
+common:move_to_bag			go to your bag				
+common:necklaces	kolyeler		necklaces	kaulakorut		목걸이	
+common:password_required	şifre		password	salasana		비밀번호	
+common:privacy_policy	Gizlilik Politikası		privacy policy	Tietosuojakäytöntä			
+common:processing			Processing...				
+common:product_image_alt			product image	tuotteen kuva			
+common:quantity			quantity				
+common:remove_from_bag	sil		remove from bag	poista kassistasi		삭제	
+common:rings	yüzükler		rings	sormukset		반지	
+common:select_language			Select language				
+common:share	Paylaş		share	jaa			
+common:shipping_statement	herkes için hızlı sevkiyat sağlar		{{main_title}} provides fast shipping for all	{{main_title}} antaa nopeita ostamis aikoja kaikille			
+common:shop			shop	kauppa			
+common:shop_now	şimdi al		shop now	osta nyt			
+common:signup	Üye olun		Sign up	Tee uusi tili		가입	
+common:skip_to_main			skip to the main content				
+common:terms_of_service	genel hüküm ve koşullar 		terms of service	käyttöehdot			
+common:unheart	kalbi kaldır		remove heart	en tykkää			
+common:unwishlist			remove from wishlist				
+common:username_required	Kullanıcı adı veya e-posta		username or email	Käyttäjätunnus tai sähköpostiosoite			
+common:view_all			view all	näytä kaikki			
+common:views			views	näkökerrat			
+common:welcome	hoşgeldiniz {{username}}		welcome {{username}}	tervetuloa {{username}}			
+common:wishlist			add to wishlist				
