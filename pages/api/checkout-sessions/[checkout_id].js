@@ -15,57 +15,54 @@ export default async function success(req, res) {
   let uuid = null;
   let user = null;
   try {
-    uuid = await auth(req, res);
-
+    const { uuid: _tmp } = await auth(req, res);
+    uuid = _tmp;
     user = await users.findOne({ uuid });
-  } catch {}
+  } catch (e) {
+    console.log("not logged in");
+  }
 
   const stripe = await getStripe();
   const checkout = await stripe.checkout.sessions.retrieve(
     checkout_id
   );
 
-  console.log("checkout object", checkout);
-
   if (checkout.payment_status === "paid") {
-    const embed = new MessageBuilder()
+    // check if order already exists return {success:false}
+    const oldOrder = await orders.findOne({ checkout_id });
+    if (oldOrder && oldOrder.payment_status === "paid") {
+      return res.send({ success: false });
+    }
+
+    console.log("checkout", checkout);
+
+    let embed = new MessageBuilder()
       .setTitle(`**New Order** (${checkout_id})`)
-      .setColor(0x00b0f4)
-      // !TODO TAKE THE ADDRESS OF THE USER
-      .setDescription(
-        `Order to be delivered to: **${JSON.stringify(
-          checkout.shipping
-        )}**!`
+      .setText(
+        `https://dashboard.stripe.com/test/payment/${checkout.payment_intent}`
       )
+      .setColor(0x00b0f4)
+      .addField(`name`, checkout.shipping.name)
+      .addField(`email`, checkout.customer_details.email)
       .setTimestamp();
 
-    for (let i = 0; i < checkout.line_items.length; i++) {
-      const item = checkout.line_items[i];
-      embed.addField(
-        `${item.name}`,
-        `${item.quantity} x ${item.price}`
+    for (const [title, value] of Object.entries(
+      checkout.shipping.address
+    )) {
+      embed = embed.addField(`${title}`, `${value}`, true);
+    }
+
+    if (user) {
+      await users.updateOne(
+        { uuid },
+        { $push: { orders: checkout_id } }
       );
+      await users.updateOne({ uuid }, { $set: { cart: [] } });
     }
 
-    const id = v4();
-
-    // check if order already exists
-    const oldOrder = await orders.findOne({ checkout_id });
-    if (oldOrder) {
-      return res.end();
-    }
-
-    await orders.insert({
-      checkout_id,
-      id,
-      checkout,
-      user,
-      items: checkout.line_items,
-      createdAt: new Date(),
-    });
-
-    hook.send(embed);
+    console.log("sending...");
+    await hook.send(embed);
   }
 
-  return res.end();
+  return res.send({ success: checkout.payment_status === "paid" });
 }

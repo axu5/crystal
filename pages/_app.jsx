@@ -98,7 +98,7 @@ function TopComponent() {
             <div>
               <span
                 onClick={() => {
-                  console.log("clicked");
+                  // TODO: add menu
                 }}
                 className='hover:text-purple-600 lowercase cursor-pointer p-5'
               >
@@ -108,8 +108,9 @@ function TopComponent() {
 
             <div
               className='
+              hidden
               absolute
-              px-3 flex flex-col justify-center bg-white rounded shadow-lg right-20 top-12'
+              px-3 flex-col justify-center bg-white rounded shadow-lg right-20 top-12'
             >
               <ul className=''>
                 {/* TODO: add translations */}

@@ -13,6 +13,7 @@ import { isServer } from "../utils/isServer";
 import DisplayItem from "../components/DisplayItem";
 import { useRouter } from "next/router";
 import Modal from "../components/Modal";
+import addToCart from "../utils/addToCart";
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = loadStripe(publishableKey);
@@ -51,18 +52,17 @@ export const getServerSideProps = async context => {
 };
 
 export default function Bag({ user, cart: parsedCart }) {
-  console.log("parsedCart", parsedCart);
   const { t } = useTranslation();
   const router = useRouter();
 
   const { status, session_id } = router.query;
 
-  if (session_id) {
-    const url = `http://localhost:3000/api/checkout-sessions/${session_id}`;
-    axios.get(url).then(res => {
-      console.log(res.data);
-    });
-  }
+  // if (session_id) {
+  //   const url = `http://localhost:3000/api/checkout-sessions/${session_id}`;
+  //   axios.get(url).then(res => {
+  //     console.log("res.data", res.data);
+  //   });
+  // }
 
   const cartKey = localStorageKeys.cart;
 
@@ -71,6 +71,8 @@ export default function Bag({ user, cart: parsedCart }) {
       ? []
       : parsedCart.length
       ? parsedCart
+      : isServer()
+      ? []
       : JSON.parse(localStorage.getItem(cartKey))
   );
   const [loading, setLoading] = useState(true);
@@ -106,7 +108,12 @@ export default function Bag({ user, cart: parsedCart }) {
         return json;
       });
 
-      const tmp = await Promise.all(promises);
+      let tmp = await Promise.all(promises);
+
+      // TODO: remove all items from cart when they are paid for BRRRRRR
+      // if (status === "success") {
+      //   tmp = tmp.map(async item => await addToCart(item.id));
+      // }
 
       setCart(tmp);
       setCartCopy(tmp);
@@ -123,7 +130,7 @@ export default function Bag({ user, cart: parsedCart }) {
     };
 
     if (loading) load();
-  }, [cart, loading]);
+  }, [cart, loading, parsedCart]);
 
   const createCheckOutSession = async cart => {
     setLoading(true);
@@ -136,6 +143,7 @@ export default function Bag({ user, cart: parsedCart }) {
           quantity,
           size,
         })),
+        user: user.uuid,
       }
     );
 
@@ -153,7 +161,6 @@ export default function Bag({ user, cart: parsedCart }) {
     <>
       <Head>
         <title>
-          {/* TODO: make international */}
           {user
             ? t("common:cart_username", { username: user.username })
             : t("common:cart_not_logged_in")}
@@ -161,7 +168,13 @@ export default function Bag({ user, cart: parsedCart }) {
       </Head>
       <main>
         {status === "success" ? (
-          <Modal>
+          <Modal
+            callback={async () => {
+              if (status === "success" && session_id && !isServer()) {
+                router.push("/bag", null, { shallow: true });
+              }
+            }}
+          >
             <div className='mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100'>
               <svg
                 className='h-6 w-6 text-green-600'
@@ -184,6 +197,7 @@ export default function Bag({ user, cart: parsedCart }) {
             <div className='mt-2 px-7 py-3'>
               <p className='text-sm text-gray-500'>
                 {"Payment went through successfully"}
+                <br />
                 {"Thank you for your purchase!"}
               </p>
             </div>
@@ -200,7 +214,9 @@ export default function Bag({ user, cart: parsedCart }) {
                   : "Your cart is empty"}
                 <button
                   disabled={cart.length === 0 || loading || sum === 0}
-                  onClick={_ => createCheckOutSession(cart)}
+                  onClick={() => {
+                    createCheckOutSession(cart);
+                  }}
                   id='main-content'
                   className='bg-blue-500 hover:bg-blue-600 text-white block w-full py-2 rounded mt-2 disabled:cursor-not-allowed disabled:bg-blue-100'
                 >

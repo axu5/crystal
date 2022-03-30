@@ -12,6 +12,7 @@ export default function addToCart(id, user = null) {
     for (let i = 0; i < cart.length; ++i) {
       const prod = cart[i];
       if (prod.id === id) {
+        console.log("removing", prod.id);
         cart.splice(i, 1);
         add = false;
         break;

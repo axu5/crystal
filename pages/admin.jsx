@@ -83,7 +83,10 @@ export default function Admin({ user }) {
       )
         .replace(/ +/g, "")
         .split(/,/g);
-      if (similar === null) return;
+      if (similar === null || similar.length === 0) {
+        similar = [];
+        break;
+      }
       const isProduct = similar.every(
         sim => products.some(prod => prod.slug === sim) || sim === ""
       );
@@ -103,7 +106,9 @@ export default function Admin({ user }) {
       )
         .replace(/ +/g, "")
         .split(/,/g);
-      if (images === null) return;
+      if (images === null || images.length === 0) {
+        return;
+      }
       const validImages = images.every(img =>
         img.match(/^https?:\/\//)
       );
@@ -133,6 +138,8 @@ export default function Admin({ user }) {
       tags,
       price,
     };
+
+    // console.log(product);
 
     const { success, error } = await makeAuthReq(
       "/products",
@@ -397,7 +404,7 @@ function SingleProduct({ product, err }) {
             </button>
             <button
               onClick={() => {
-                router.reload();
+                router.push("/admin", null, { shallow: true });
               }}
               className='flex flex-row bg-yellow-300 px-3 py-2 rounded-sm'
             >

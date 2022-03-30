@@ -24,12 +24,10 @@ export default function Catalogue({ items }) {
   const fetchAllProducts = useCallback(async () => {
     const res = await fetch(`http://localhost:3000/api/products`);
     const json = await res.json();
-    console.log("fetched all products", json);
 
     setProducts(json);
   }, []);
 
-  // TODO: stop api spam
   useEffect(() => {
     (async () => {
       const { search } = router.query;
@@ -39,8 +37,6 @@ export default function Catalogue({ items }) {
         `http://localhost:3000/api/products?q=${search}`
       );
       const json = await res.json();
-
-      console.log(`fetched queried products (${search})`, json);
 
       setProducts(json);
     })();

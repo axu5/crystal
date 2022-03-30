@@ -1,65 +1,64 @@
 variable	Turkish (tr)	German (de)	English (en-US)	Finnish (fi)	Italian (it)	Korean (ko)	Polish (pl)
-common:about	hakkımızda		about	meistä			
-common:add_to_bag	sepete ekle		add to bag	lisää kassiisi	aggiungi al carrello	장바구니 담기 	
-common:all_products			All Products				
-common:bag	sepet		bag	kassisi			
-common:bundles			bundles				
-common:buy_now			buy now	osta nyt			
-common:buy_now			buy	osta			
-common:cart_not_logged_in			your cart				
-common:cart_username			{{username}}'s cart				
-common:catalogue	katalog		catalogue	katalogia			
-common:checkout			checkout	osta			
+common:about	hakkımızda		about	meistä			o nas
+common:add_to_bag	sepete ekle		add to bag	lisää kassiisi	aggiungi al carrello	장바구니 담기 	dodaj do torby
+common:all_products			All Products	kakki tuotteet	tutti prodotti 		wszystkie produkty 
+common:bag	sepet		bag	kassisi	carrello 		
+							
+common:buy_now			buy now	osta nyt	aquista adesso 		kupuj teraz
+common:buy_now			buy	osta	aquista adesso 		kupuj 
+common:cart_not_logged_in			your bag	kassisi	tuo carrello 		twoja torba
+common:cart_username			{{username}}'s bag	{{username}}n kassi	carrello di (username)		torba (username)
+common:catalogue	katalog		catalogue	katalogia	catalogare		katalog
+common:checkout			checkout	osta nyt	cassa		
 common:copyright			Copyright Reserved by {{main_title}}	{{main_title}}in tekijänoikeudet pidätetään			
-common:couples	çiftler		Couples				
-common:crystal_catalogue			{{main_title}} catalogue	{{main_title}}in katalogia			
-common:discount			Discount	alennus		할인	
-common:discover	kataloğu keşfedin		discover our catalogue				
-common:empty			your cart is empty				
-common:empty_return			return to shopping				
-common:fa1	genellikle bir sipariş *** gün sürer. Bir sorun çıkarsa lütfen bize herhangi bir sosyal medyalarımızdan ulaşın.		Usually an order takes ---- days. If there is an issue please contact us on any of our social media'				
-common:fa2							
-common:fa3							
-common:faq	sıkça sorulan sorular		faq	useimmat kysymykset			
-common:fq1	bir sipariş ne kadar sürerdir		How long does an order take?				
-common:fq2							
-common:fq3							
-common:heart	kalp		heart	tykkään		좋아요	
-common:hearts	kalpler		hearts	tykkäävät			
-common:home			home	kotisivu			
-common:instagram	instagram		instagram	instagram		인스타그램 	
-common:loading			Loading...				
-common:login	Giriş yap	Anmelden	Login	Kirjaudu sisään		로그인	
-common:login_error	bir hesap oluşturmak ister misiniz		Want to create an account?	Haluaisitko tehdä uuden tilin?			
-common:login_title	giriş yap		Login	Kirjaudu sisään			
+common:couples	çiftler		couples	pariskunnat	coppie		pary
+common:crystal_catalogue			{{main_title}} catalogue	{{main_title}}in katalogia	catalogare cristalli 		{{main_title}} katalog
+common:discount			discount	alennus	sconto 	할인	promocja
+common:discover	kataloğu keşfedin		discover our catalogue	tutustu luetteloomme	scopri 		
+common:empty			your bag is empty	sinun kassisi on tyhjä	borsa e vuoto 		twoja torba jest pusta
+common:empty_return			return to shopping	palaudu päätysivulle	continua compre 		wróć do zakupów
+							
+							
+							
+							
+							
+							
+							
+common:heart	kalp		heart	tykkään	cuore	좋아요	serce
+common:hearts	kalpler		hearts	tykkäävät	cuori 		serca
+common:home			home	kotisivu	casa		
+common:instagram	instagram		instagram	instagram	instagram	인스타그램 	instagram
+common:loading			Loading...	Ladataan...	scaricando 		Ładowanie
+common:login	Giriş yap	Anmelden	Login	Kirjaudu sisään	accesso	로그인	Zaloguj się
+common:login_error	bir hesap oluşturmak ister misiniz		Want to create an account?	Haluaisitko tehdä uuden tilin?	Vuoi creare un account?		Czy chcesz otworzyć konto?
+common:login_title	giriş yap		Login	Kirjaudu sisään	accesso		
 common:logo_alt			{{main_title}} logo	{{main_title}}in logo			
-common:logout	Oturumu kapat		Logout	Kirjaudu ulos		로그아웃	
-common:logout_all			Log out all your accounts				
-common:logout_check			Are you sure you want to logout?	Oletko varma että haluat kirjautua ulos?			
+common:logout	Oturumu kapat		Logout	Kirjaudu ulos	logout 	로그아웃	Wyloguj się
+common:logout_all			Log out all your accounts	Kirjaudu ulos kaikista tileistäsi	logout di tutti gli account		Wyloguj się ze wszystkich kont
+common:logout_check			Are you sure you want to logout?	Oletko varma että haluat kirjautua ulos?	Sicuro di logout?		Czy na pewno chcesz się wylogować?
 common:main_title	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins	Crystal Cabins
-common:main_title_extension			a JAYE company	JAYE firma			
-common:mission_statement			Shop environmentally and fashionable, fast	Shoppaile trendikkäästi, ymparistö ystävällisesti, ja nopeasti			
-common:move_to_bag			go to your bag				
-common:necklaces	kolyeler		necklaces	kaulakorut		목걸이	
-common:password_required	şifre		password	salasana		비밀번호	
-common:privacy_policy	Gizlilik Politikası		privacy policy	Tietosuojakäytöntä			
-common:processing			Processing...				
-common:product_image_alt			product image	tuotteen kuva			
-common:quantity			quantity				
-common:remove_from_bag	sil		remove from bag	poista kassistasi		삭제	
-common:rings	yüzükler		rings	sormukset		반지	
-common:select_language			Select language				
-common:share	Paylaş		share	jaa			
-common:shipping_statement	herkes için hızlı sevkiyat sağlar		{{main_title}} provides fast shipping for all	{{main_title}} antaa nopeita ostamis aikoja kaikille			
-common:shop			shop	kauppa			
-common:shop_now	şimdi al		shop now	osta nyt			
-common:signup	Üye olun		Sign up	Tee uusi tili		가입	
-common:skip_to_main			skip to the main content				
-common:terms_of_service	genel hüküm ve koşullar 		terms of service	käyttöehdot			
-common:unheart	kalbi kaldır		remove heart	en tykkää			
-common:unwishlist			remove from wishlist				
-common:username_required	Kullanıcı adı veya e-posta		username or email	Käyttäjätunnus tai sähköpostiosoite			
-common:view_all			view all	näytä kaikki			
-common:views			views	näkökerrat			
-common:welcome	hoşgeldiniz {{username}}		welcome {{username}}	tervetuloa {{username}}			
-common:wishlist			add to wishlist				
+common:main_title_extension			a JAYE company	JAYE firma	una azienda JAYE		firma JAYE
+common:mission_statement			Shop environmentally and fashionable, fast	Shoppaile trendikkäästi, ymparistö ystävällisesti, ja nopeasti	Compra, in mente del ambiente, alla moda e velocissimo 		środowiskowe, modne i szybkie zakupy
+common:move_to_bag			go to your bag	mene kassiisi	vai a carrello		do torby
+common:necklaces	kolyeler		necklaces	kaulakorut	collane	목걸이	naszyjniki
+common:password_required	şifre		password	salasana	password	비밀번호	hasło
+common:privacy_policy	Gizlilik Politikası		privacy policy	Tietosuojakäytöntä	politica della riservatezza		zasady ochrony prywatności
+common:processing			Processing...	Prosessoidaan...	lavorazione 		
+common:product_image_alt			product image	tuotteen kuva	foto prodocto 		zdjęcie productu
+common:quantity			quantity	määrä	quantita 		ilość
+common:remove_from_bag	sil		remove from bag	poista kassistasi	tolgi da borsa 	삭제	usuń z torby
+common:rings	yüzükler		rings	sormukset	anelli 	반지	pierścionki
+common:select_language			Select language	Valitse Kieli	selezziona lingua 		wybór języka
+common:share	Paylaş		share	jaa	condividi 		udostępnij
+common:shipping_statement	herkes için hızlı sevkiyat sağlar		{{main_title}} provides fast shipping for all	{{main_title}} antaa nopeita ostamis aikoja kaikille	{{main_title}} offre acquisti veloci per tutti 		{{main_title}} udziela szybkie dostawy
+common:shop			shop	kauppa	compra		sklep
+common:shop_now	şimdi al		shop now	osta nyt	aquista adesso 		
+common:signup	Üye olun		Sign up	Tee uusi tili	iscrizione 	가입	zapisz się
+common:skip_to_main			skip to the main content	siiry pääsisältöön	vai al contenunto maggiore		pomiń do treści głównej
+common:terms_of_service	genel hüküm ve koşullar 		terms of service	käyttöehdot	termini di serviozio 		warunki usługi
+common:unheart	kalbi kaldır		remove heart	en tykkää	tolgi cuore 		usuń serca
+							
+common:username_required	Kullanıcı adı veya e-posta		username or email	Käyttäjätunnus tai sähköpostiosoite	username o email 		nazwa użytkownika lub adres mail
+common:view_all			view all	näytä kaikki	guarda tutti 		pokaż wszystko
+common:views			views	näkökerrat	guardati 		wyświetlenia
+common:welcome	hoşgeldiniz {{username}}		welcome {{username}}	tervetuloa {{username}}	benvenuto {{username}}		witaj {{username}}

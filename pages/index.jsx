@@ -1,11 +1,14 @@
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
 
 import Display from "../components/Display";
 import ArrowRight from "../components/assets/ArrowRight";
 import getItems from "../utils/getItems";
+import { isServer } from "../utils/isServer";
+import Modal from "../components/Modal";
 
 export async function getServerSideProps() {
   return {
@@ -18,16 +21,55 @@ export async function getServerSideProps() {
 export default function Home({ items }) {
   const { t } = useTranslation();
 
+  const router = useRouter();
+  const { status, session_id } = router.query;
+
   return (
     <>
       <Head>
         <title>{t("common:main_title")}</title>
         <meta
           name='description'
+          content='Get high quality crystals for yourself, loved one or friends. We offer a wide range of crystal jewelry for any need you may have.'
           // TODO: add translations
-          content='Get high quality crystals**'
         />
       </Head>
+      {status === "success" ? (
+        <Modal
+          callback={async () => {
+            if (status === "success" && session_id && !isServer()) {
+              router.push("/bag", null, { shallow: true });
+            }
+          }}
+        >
+          <div className='mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100'>
+            <svg
+              className='h-6 w-6 text-green-600'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2'
+                d='M5 13l4 4L19 7'
+              ></path>
+            </svg>
+          </div>
+          <h3 className='text-lg leading-6 font-medium text-gray-900'>
+            {"Success"}
+          </h3>
+          <div className='mt-2 px-7 py-3'>
+            <p className='text-sm text-gray-500'>
+              {"Payment went through successfully"}
+              <br />
+              {"Thank you for your purchase!"}
+            </p>
+          </div>
+        </Modal>
+      ) : null}
       <div className='md:flex md:flex-row mt-20'>
         <div className='md:w-2/5 flex flex-col justify-center items-center'>
           <h2 className='font-serif text-5xl text-gray-600 mb-4 text-center md:self-start md:text-left'>
@@ -57,26 +99,14 @@ export default function Home({ items }) {
           />
         </div>
       </div>{" "}
-      {/* hero section */}
-      {items && (
-        <Display
-          title={t("common:necklaces")}
-          slug='necklaces'
-          items={items.filter(item =>
-            item.tags.some(tag => tag.startsWith("neck"))
-          )}
-        />
-      )}
       {items && (
         <Display
           title={t("common:rings")}
-          slug='rings'
-          items={items.filter(item =>
-            item.tags.some(tag => tag.startsWith("ring"))
-          )}
+          slug='ring'
+          items={items}
+          callback={() => {}}
         />
       )}
-      {/* necklaces */}
     </>
   );
 }

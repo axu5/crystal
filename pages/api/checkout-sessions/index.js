@@ -1,12 +1,12 @@
 import getStripe from "../../../utils/getStripe";
 import getDb from "../database";
+import auth from "../utils/auth";
 
 //! TODO Save order to DB
 export default async function checkoutSessions(req, res) {
   const { cart } = req.body; // cart is a list of id's, quantities, and sizes
-  console.log(cart);
 
-  const { products } = await getDb();
+  const { products, orders, users } = await getDb();
 
   // convert list of id's to list of item objects
   const items = await Promise.all(
@@ -48,11 +48,6 @@ export default async function checkoutSessions(req, res) {
         },
         description: description,
         quantity,
-        adjustable_quantity: {
-          enabled: true,
-          minimum: 1,
-          maximum: 10,
-        },
       };
     })
   );
@@ -72,7 +67,52 @@ export default async function checkoutSessions(req, res) {
     mode: "payment",
 
     shipping_address_collection: {
-      allowed_countries: ["MT", "FI"],
+      /*
+       * Malta
+       * Germany
+       * Denmark
+       * Sweden
+       * Finland
+       * France
+       * Poland
+       */
+      allowed_countries: [
+        "MT",
+        "DE",
+        "DK",
+        "SK",
+        "FI",
+        "FR",
+        "PL",
+        // "TR",
+        // "AU",
+        // "AT",
+        // "BE",
+        // "BG",
+        // "CA",
+        // "CY",
+        // "CZ",
+        // "ES",
+        // "EE",
+        // "GR",
+        // "HR",
+        // "HU",
+        // "IT",
+        // "IN",
+        // "IE",
+        // "IS",
+        // "KR",
+        // "LT",
+        // "LU",
+        // "LV",
+        // "NL",
+        // "NO",
+        // "PT",
+        // "RU",
+        // "RO",
+        // "SE",
+        // "US",
+      ],
     },
     shipping_options: [
       {
@@ -97,7 +137,7 @@ export default async function checkoutSessions(req, res) {
     // success_url: "http://yoursite.com/order/success?session_id={CHECKOUT_SESSION_ID}"
     success_url:
       req.headers.origin +
-      "/bag" +
+      "/" +
       "?status=success&session_id={CHECKOUT_SESSION_ID}",
     cancel_url:
       req.headers.origin +
@@ -105,5 +145,32 @@ export default async function checkoutSessions(req, res) {
       "?status=cancel&session_id={CHECKOUT_SESSION_ID}",
   });
 
-  res.json({ id: session.id });
+  const orderObject = {
+    order_id: session.id,
+    status: "pending",
+    checkout: session,
+    user: {},
+    createdAt: new Date(),
+    items: cart,
+  };
+
+  try {
+    const { uuid } = await auth(req, res);
+    const user = await users.findOne({ uuid });
+
+    orderObject.user = {
+      username: user.username,
+      uuid: user.uuid,
+    };
+
+    await orders.insertOne(orderObject);
+    await users.updateOne(
+      { uuid },
+      { $push: { orders: orderObject.order_id } }
+    );
+    res.json({ id: session.id });
+  } catch (e) {
+    await orders.insertOne(orderObject);
+    res.json({ id: session.id });
+  }
 }

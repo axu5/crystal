@@ -72,7 +72,7 @@ export default async function productHandler(req, res) {
         }
       }
 
-      if (requiredFields.length) throw "";
+      if (requiredFields.length > 0) throw "";
 
       const existingProd = await _products.findOne({
         $or: [
@@ -82,9 +82,10 @@ export default async function productHandler(req, res) {
         ],
       });
 
-      if (existingProd) throw "Nahh";
+      if (existingProd) throw "";
 
       // resolve promises
+      product.similar = product.similar.filter(x => x != "");
       product.similar = await Promise.all(
         product.similar.map(async slug => {
           const tmp = await _products.findOne({ slug });
@@ -92,7 +93,7 @@ export default async function productHandler(req, res) {
         })
       );
 
-      console.log("product.similar", product.similar);
+      // console.log("product.similar", product.similar);
 
       await _products.insertOne(product);
 
@@ -142,7 +143,7 @@ export default async function productHandler(req, res) {
                   { id: _slug },
                 ],
               });
-              console.log(`productLink`, productLink);
+              // console.log(`productLink`, productLink);
               return productLink.id;
             })
         ),
@@ -171,7 +172,7 @@ export default async function productHandler(req, res) {
   } else if (req.method === "DELETE") {
     try {
       const { id: productId } = req.body;
-      if (!productId) throw "uhh you forgor something";
+      if (!productId) throw "no product id was provided";
       const product = await _products.findOne({ id: productId });
       if (!product) throw "no product with that id";
 
@@ -182,6 +183,6 @@ export default async function productHandler(req, res) {
       return res.json({ success: false, error: e });
     }
   } else {
-    return res.json({ success: false, error: "LOL WTF" });
+    return res.json({ success: false, error: "POST, PUT, OR GET" });
   }
 }
